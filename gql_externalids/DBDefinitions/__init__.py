@@ -11,6 +11,9 @@ from .Base import BaseModel
 from .ExternalIdCategoryModel import ExternalIdCategoryModel
 from .ExternalIdTypeModel import ExternalIdTypeModel
 from .ExternalIdModel import ExternalIdModel
+from .GroupModel import GroupModel
+from .GroupTypeModel import GroupTypeModel
+from .UserModel import UserModel
 
 
 
