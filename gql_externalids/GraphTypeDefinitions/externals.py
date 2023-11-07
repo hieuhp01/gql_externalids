@@ -60,3 +60,54 @@ class GroupGQLModel:
         loader = getLoaders(info=info).externalids_inner_id
         result = await loader.load(self.id)    
         return result
+    
+@strawberry.federation.type(extend=True, keys=["id"])
+class ProjectGQLModel:
+
+    id: strawberry.ID = strawberry.federation.field(external=True)
+
+    @classmethod
+    async def resolve_reference(cls, id: strawberry.ID):
+        return ProjectGQLModel(id=id)
+
+    @strawberry.field(description="""All external ids related to a group""")
+    async def external_ids(
+        self, info: strawberry.types.Info
+    ) -> List["ExternalIdGQLModel"]:
+        loader = getLoaders(info=info).externalids_inner_id
+        result = await loader.load(self.id)    
+        return result
+    
+@strawberry.federation.type(extend=True, keys=["id"])
+class PublicationGQLModel:
+
+    id: strawberry.ID = strawberry.federation.field(external=True)
+
+    @classmethod
+    async def resolve_reference(cls, id: strawberry.ID):
+        return PublicationGQLModel(id=id)
+
+    @strawberry.field(description="""All external ids related to a group""")
+    async def external_ids(
+        self, info: strawberry.types.Info
+    ) -> List["ExternalIdGQLModel"]:
+        loader = getLoaders(info=info).externalids_inner_id
+        result = await loader.load(self.id)    
+        return result
+    
+@strawberry.federation.type(extend=True, keys=["id"])
+class FacilityGQLModel:
+
+    id: strawberry.ID = strawberry.federation.field(external=True)
+
+    @classmethod
+    async def resolve_reference(cls, id: strawberry.ID):
+        return FacilityGQLModel(id=id)
+
+    @strawberry.field(description="""All external ids related to a group""")
+    async def external_ids(
+        self, info: strawberry.types.Info
+    ) -> List["ExternalIdGQLModel"]:
+        loader = getLoaders(info=info).externalids_inner_id
+        result = await loader.load(self.id)    
+        return result
