@@ -10,6 +10,7 @@ from .UUID import UUIDColumn, UUIDFKey
 from .Base import BaseModel
 
 class ExternalIdTypeModel(BaseModel):
+    
     __tablename__ = "externalidtypes"
 
     id = UUIDColumn()

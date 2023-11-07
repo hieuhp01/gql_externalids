@@ -1,35 +1,33 @@
 import sqlalchemy
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
     Column,
     String,
-    ForeignKey,
     DateTime,
-    Boolean,
+    ForeignKey,
 )
+
 from sqlalchemy.orm import relationship
 
 from .UUID import UUIDColumn, UUIDFKey
 from .Base import BaseModel
 
+class ProjectModel(BaseModel):
+    __tablename__ = "projects"
 
-class GroupModel(BaseModel):
-    
-    __tablename__ = "groups"
-    
     id = UUIDColumn()
+
     name = Column(String)
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     startdate = Column(DateTime)
     enddate = Column(DateTime)
-    valid = Column(Boolean, default=True)
 
-    grouptype_id = Column(ForeignKey("grouptypes.id"), index=True)
-    grouptype = relationship("GroupTypeModel", back_populates="groups")
-
-    mastergroup_id = Column(ForeignKey("groups.id"), index=True)
+    projecttype_id = Column(ForeignKey("projecttypes.id"), index=True)
+    projecttype = relationship("ProjectTypeModel", back_populates="projects")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-
+    
+    group_id = Column(ForeignKey("groups.id"), index=True)
+    group = relationship("GroupModel", backref="projects")

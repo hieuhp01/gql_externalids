@@ -9,13 +9,15 @@ from sqlalchemy import (
 from .UUID import UUIDColumn, UUIDFKey
 from .Base import BaseModel
 
-class ExternalIdCategoryModel(BaseModel):
+class PublicationTypeModel(BaseModel):
     
-    __tablename__ = "externalidcategories"
+    __tablename__ = "publicationtypes"
 
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
+
+    category_id = Column(ForeignKey("publicationcategories.id"), index=True, nullable=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())

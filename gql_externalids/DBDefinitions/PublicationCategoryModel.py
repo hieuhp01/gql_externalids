@@ -9,9 +9,9 @@ from sqlalchemy import (
 from .UUID import UUIDColumn, UUIDFKey
 from .Base import BaseModel
 
-class ExternalIdCategoryModel(BaseModel):
+class PublicationCategoryModel(BaseModel):
     
-    __tablename__ = "externalidcategories"
+    __tablename__ = "publicationcategories"
 
     id = UUIDColumn()
     name = Column(String)
