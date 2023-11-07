@@ -11,7 +11,6 @@ from sqlalchemy.orm import relationship
 from .UUID import UUIDColumn, UUIDFKey
 from .Base import BaseModel
 
-
 class GroupModel(BaseModel):
     
     __tablename__ = "groups"

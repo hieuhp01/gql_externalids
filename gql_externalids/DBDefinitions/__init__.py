@@ -19,6 +19,7 @@ from .ProjectTypeModel import ProjectTypeModel
 from .PublicationCategoryModel import PublicationCategoryModel
 from .PublicationModel import PublicationModel
 from .PublicationTypeModel import PublicationTypeModel
+from .PublicationAuthorModel import PublicationAuthorModel
 from .UserModel import UserModel
 
 

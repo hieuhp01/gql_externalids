@@ -8,6 +8,10 @@ import pytest
 
 from gql_externalids.DBDefinitions import BaseModel
 from gql_externalids.DBDefinitions import ExternalIdTypeModel, ExternalIdModel, ExternalIdCategoryModel
+from gql_externalids.DBDefinitions import PublicationTypeModel, PublicationCategoryModel, PublicationModel 
+from gql_externalids.DBDefinitions import ProjectTypeModel, ProjectCategoryModel, ProjectModel
+from gql_externalids.DBDefinitions import GroupTypeModel, GroupModel
+from gql_externalids.DBDefinitions import UserModel
 
 from .shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
