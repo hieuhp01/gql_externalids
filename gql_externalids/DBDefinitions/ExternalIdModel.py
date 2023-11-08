@@ -25,10 +25,6 @@ class ExternalIdModel(BaseModel):
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     
-    user_id = Column(ForeignKey("users.id"), index=True)
-    user = relationship("UserModel", backref="externalids")
     
-    group_id = Column(ForeignKey("groups.id"), index=True)
-    group = relationship("GroupModel", backref="externalids")
     
     

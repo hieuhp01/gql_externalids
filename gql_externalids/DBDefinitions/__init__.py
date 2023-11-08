@@ -11,16 +11,7 @@ from .Base import BaseModel
 from .ExternalIdCategoryModel import ExternalIdCategoryModel
 from .ExternalIdTypeModel import ExternalIdTypeModel
 from .ExternalIdModel import ExternalIdModel
-from .GroupModel import GroupModel
-from .GroupTypeModel import GroupTypeModel
-from .ProjectCategoryModel import ProjectCategoryModel
-from .ProjectModel import ProjectModel
-from .ProjectTypeModel import ProjectTypeModel
-from .PublicationCategoryModel import PublicationCategoryModel
-from .PublicationModel import PublicationModel
-from .PublicationTypeModel import PublicationTypeModel
-from .PublicationAuthorModel import PublicationAuthorModel
-from .UserModel import UserModel
+
 
 
 
