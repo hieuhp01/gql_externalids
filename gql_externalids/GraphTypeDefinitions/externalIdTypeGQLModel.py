@@ -8,6 +8,9 @@ from .externalIdCategoryGQLModel import ExternalIdCategoryGQLModel
 def getLoaders(info):
     return info.context["all"]
 
+def getUser(info):
+    return info.context["user"]
+
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
 

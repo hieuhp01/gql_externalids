@@ -21,7 +21,10 @@ def getLoaders(info):
 # - ma odlisnou implementaci v porovnani s modelem, za ktery jste odpovedni
 #
 ###########################################################################################################################
-
+async def resolve_external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+    loader = getLoaders(info=info).externalids_inner_id
+    result = await loader.load(self.id)
+    return result
 
 @strawberry.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
@@ -35,13 +38,8 @@ class UserGQLModel:
         return UserGQLModel(id=id)
 
     @strawberry.field(description="""All external ids related to the user""")
-    async def external_ids(
-        self, info: strawberry.types.Info
-    ) -> List["ExternalIdGQLModel"]:
-
-        loader = getLoaders(info=info).externalids_inner_id
-        result = await loader.load(self.id)    
-        return result
+    async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+        return await resolve_external_ids(self, info)
 
 
 @strawberry.federation.type(extend=True, keys=["id"])
@@ -53,13 +51,9 @@ class GroupGQLModel:
     async def resolve_reference(cls, id: strawberry.ID):
         return GroupGQLModel(id=id)
 
-    @strawberry.field(description="""All external ids related to a group""")
-    async def external_ids(
-        self, info: strawberry.types.Info
-    ) -> List["ExternalIdGQLModel"]:
-        loader = getLoaders(info=info).externalids_inner_id
-        result = await loader.load(self.id)    
-        return result
+    @strawberry.field(description="""All external ids related to the group""")
+    async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+        return await resolve_external_ids(self, info)
     
 @strawberry.federation.type(extend=True, keys=["id"])
 class ProjectGQLModel:
@@ -70,13 +64,9 @@ class ProjectGQLModel:
     async def resolve_reference(cls, id: strawberry.ID):
         return ProjectGQLModel(id=id)
 
-    @strawberry.field(description="""All external ids related to a group""")
-    async def external_ids(
-        self, info: strawberry.types.Info
-    ) -> List["ExternalIdGQLModel"]:
-        loader = getLoaders(info=info).externalids_inner_id
-        result = await loader.load(self.id)    
-        return result
+    @strawberry.field(description="""All external ids related to the project""")
+    async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+        return await resolve_external_ids(self, info)
     
 @strawberry.federation.type(extend=True, keys=["id"])
 class PublicationGQLModel:
@@ -87,13 +77,9 @@ class PublicationGQLModel:
     async def resolve_reference(cls, id: strawberry.ID):
         return PublicationGQLModel(id=id)
 
-    @strawberry.field(description="""All external ids related to a group""")
-    async def external_ids(
-        self, info: strawberry.types.Info
-    ) -> List["ExternalIdGQLModel"]:
-        loader = getLoaders(info=info).externalids_inner_id
-        result = await loader.load(self.id)    
-        return result
+    @strawberry.field(description="""All external ids related to the publication""")
+    async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+        return await resolve_external_ids(self, info)
     
 @strawberry.federation.type(extend=True, keys=["id"])
 class FacilityGQLModel:
@@ -104,10 +90,6 @@ class FacilityGQLModel:
     async def resolve_reference(cls, id: strawberry.ID):
         return FacilityGQLModel(id=id)
 
-    @strawberry.field(description="""All external ids related to a group""")
-    async def external_ids(
-        self, info: strawberry.types.Info
-    ) -> List["ExternalIdGQLModel"]:
-        loader = getLoaders(info=info).externalids_inner_id
-        result = await loader.load(self.id)    
-        return result
+    @strawberry.field(description="""All external ids related to the facility""")
+    async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+        return await resolve_external_ids(self, info)
