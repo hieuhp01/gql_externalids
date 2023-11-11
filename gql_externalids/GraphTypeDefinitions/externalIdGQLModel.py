@@ -10,6 +10,10 @@ def getUser(info):
     return info.context["user"]
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
+GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".externals")]
+ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
+PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
+FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
 
 from .externalIdTypeGQLModel import ExternalIdTypeGQLModel
 

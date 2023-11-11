@@ -39,3 +39,4 @@ pytest --cov-report term-missing --cov=gql_externalids tests
 
 Linux demo run:
 DEMO=true uvicorn main:app --reload
+pip install -r requirements.txt --force
