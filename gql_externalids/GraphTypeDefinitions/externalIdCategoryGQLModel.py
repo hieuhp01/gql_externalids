@@ -1,7 +1,8 @@
 import strawberry
 import datetime
-from typing import Optional, List, Union, Annotated
+from typing import Optional, List, Union, Annotated, Type
 import gql_externalids.GraphTypeDefinitions
+
 
 def getLoaders(info):
     return info.context["all"]
@@ -15,6 +16,24 @@ GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".externals")]
 ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
 PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
 FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
+
+async def resolve_entity_reference(entity_type: Type, id: strawberry.ID):
+    if id is None:
+        return None
+    
+    if entity_type == UserGQLModel:
+        return await gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=id)
+    elif entity_type == GroupGQLModel:
+        return await gql_externalids.GraphTypeDefinitions.GroupGQLModel.resolve_reference(id=id)
+    elif entity_type == ProjectGQLModel:
+        return await gql_externalids.GraphTypeDefinitions.ProjectGQLModel.resolve_reference(id=id)
+    elif entity_type == PublicationGQLModel:
+        return await gql_externalids.GraphTypeDefinitions.PublicationGQLModel.resolve_reference(id=id)
+    elif entity_type == FacilityGQLModel:
+        return await gql_externalids.GraphTypeDefinitions.FacilityGQLModel.resolve_reference(id=id)
+    
+    return None  
+
 
 @strawberry.federation.type(
     keys=["id"],
@@ -53,9 +72,20 @@ class ExternalIdCategoryGQLModel:
         return self.created
 
     @strawberry.field(description="""Who created it""")
-    def created_by(self) -> Optional["UserGQLModel"]:
+    def created_by(self) -> Optional[Union[UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel]]:
         #sync method which returns Awaitable :)
-        return gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.createdby)
+        if hasattr(self, 'email'):
+            entity_type = UserGQLModel
+        elif hasattr(self, 'grouptype_id'):
+            entity_type = GroupGQLModel
+        elif hasattr(self, 'publication_type_id'):
+            entity_type = PublicationGQLModel
+        elif hasattr(self, 'projecttype_id'):
+            entity_type = ProjectGQLModel
+        elif hasattr(self, 'facilitytype_id'):
+            entity_type = FacilityGQLModel
+            
+        return resolve_entity_reference(entity_type, id=self.createdby)
 
     @strawberry.field(description="""Who updated it""")
     def changed_by(self) -> Optional["UserGQLModel"]:

@@ -52,6 +52,8 @@ class GroupGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: strawberry.ID):
+        if id is None:
+            return None
         return GroupGQLModel(id=id)
 
     # @strawberry.field(description="""All external ids related to the group""")
@@ -67,6 +69,8 @@ class ProjectGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: strawberry.ID):
+        if id is None:
+            return None
         return ProjectGQLModel(id=id)
 
     # @strawberry.field(description="""All external ids related to the project""")
@@ -82,11 +86,10 @@ class PublicationGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: strawberry.ID):
+        if id is None:
+            return None
         return PublicationGQLModel(id=id)
 
-    @strawberry.field(description="""All external ids related to the publication""")
-    async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
-        return await resolve_external_ids(self, info)
     # @strawberry.field(description="""All external ids related to the publication""")
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
     #     return await resolve_external_ids(self, info)
@@ -99,6 +102,8 @@ class FacilityGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: strawberry.ID):
+        if id is None:
+            return None
         return FacilityGQLModel(id=id)
 
     # @strawberry.field(description="""All external ids related to the facility""")
