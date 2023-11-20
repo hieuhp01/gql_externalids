@@ -17,24 +17,6 @@ ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
 PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
 FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
 
-async def resolve_entity_reference(entity_type: Type, id: strawberry.ID):
-    if id is None:
-        return None
-    
-    if entity_type == UserGQLModel:
-        return await gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=id)
-    elif entity_type == GroupGQLModel:
-        return await gql_externalids.GraphTypeDefinitions.GroupGQLModel.resolve_reference(id=id)
-    elif entity_type == ProjectGQLModel:
-        return await gql_externalids.GraphTypeDefinitions.ProjectGQLModel.resolve_reference(id=id)
-    elif entity_type == PublicationGQLModel:
-        return await gql_externalids.GraphTypeDefinitions.PublicationGQLModel.resolve_reference(id=id)
-    elif entity_type == FacilityGQLModel:
-        return await gql_externalids.GraphTypeDefinitions.FacilityGQLModel.resolve_reference(id=id)
-    
-    return None  
-
-
 @strawberry.federation.type(
     keys=["id"],
     description="""Entity representing an external category id ()""",
@@ -74,23 +56,32 @@ class ExternalIdCategoryGQLModel:
     @strawberry.field(description="""Who created it""")
     def created_by(self) -> Optional[Union[UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel]]:
         #sync method which returns Awaitable :)
-        if hasattr(self, 'email'):
-            entity_type = UserGQLModel
-        elif hasattr(self, 'grouptype_id'):
-            entity_type = GroupGQLModel
-        elif hasattr(self, 'publication_type_id'):
-            entity_type = PublicationGQLModel
-        elif hasattr(self, 'projecttype_id'):
-            entity_type = ProjectGQLModel
-        elif hasattr(self, 'facilitytype_id'):
-            entity_type = FacilityGQLModel
-            
-        return resolve_entity_reference(entity_type, id=self.createdby)
+        if self.createdby is None: return None
+        user = gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.createdby)
+        if user is not None: return user
+        group = gql_externalids.GraphTypeDefinitions.GroupGQLModel.resolve_reference(id=self.createdby)
+        if group is not None: return group
+        project = gql_externalids.GraphTypeDefinitions.ProjectGQLModel.resolve_reference(id=self.createdby)
+        if project is not None: return project
+        publication = gql_externalids.GraphTypeDefinitions.PublicationGQLModel.resolve_reference(id=self.createdby)
+        if publication is not None: return publication
+        facility = gql_externalids.GraphTypeDefinitions.FacilityGQLModel.resolve_reference(id=self.createdby)
+        if facility is not None: return facility
 
     @strawberry.field(description="""Who updated it""")
-    def changed_by(self) -> Optional["UserGQLModel"]:
+    def changed_by(self) -> Optional[Union[UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel]]:
         #sync method which returns Awaitable :)
-        return gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.changedby)
+        if self.changedby is None: return None
+        user = gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.changedby)
+        if user is not None: return user
+        group = gql_externalids.GraphTypeDefinitions.GroupGQLModel.resolve_reference(id=self.changedby)
+        if group is not None: return group
+        project = gql_externalids.GraphTypeDefinitions.ProjectGQLModel.resolve_reference(id=self.changedby)
+        if project is not None: return project
+        publication = gql_externalids.GraphTypeDefinitions.PublicationGQLModel.resolve_reference(id=self.changedby)
+        if publication is not None: return publication
+        facility = gql_externalids.GraphTypeDefinitions.FacilityGQLModel.resolve_reference(id=self.changedby)
+        if facility is not None: return facility
 
 #####################################################################
 #
@@ -118,7 +109,7 @@ class ExternalIdCategoryInsertGQLModel:
     name: str = strawberry.field(default=None, description="Name of type")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of type")
     id: Optional[strawberry.ID] = strawberry.field(default=None, description="Could be uuid primary key")
-    createdby: strawberry.Private[strawberry.ID]
+    createdby: strawberry.Private[strawberry.ID] = None
 
 @strawberry.input()
 class ExternalIdCategoryUpdateGQLModel:
@@ -126,7 +117,7 @@ class ExternalIdCategoryUpdateGQLModel:
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
     name: Optional[str] = strawberry.field(default=None, description="Name of category")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of category")
-    changedby: strawberry.Private[strawberry.ID]
+    changedby: strawberry.Private[strawberry.ID] = None
     
 @strawberry.type()
 class ExternalIdCategoryResultGQLModel:
