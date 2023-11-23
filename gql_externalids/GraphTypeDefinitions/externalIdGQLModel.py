@@ -57,34 +57,18 @@ class ExternalIdGQLModel:
         return self.created
 
     @strawberry.field(description="""Who created it""")
-    def created_by(self) -> Optional[Union[UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel]]:
+    def created_by(self) -> Optional["UserGQLModel"]:
         #sync method which returns Awaitable :)
         if self.createdby is None: return None
-        user = gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.createdby)
-        if user is not None: return user
-        group = gql_externalids.GraphTypeDefinitions.GroupGQLModel.resolve_reference(id=self.createdby)
-        if group is not None: return group
-        project = gql_externalids.GraphTypeDefinitions.ProjectGQLModel.resolve_reference(id=self.createdby)
-        if project is not None: return project
-        publication = gql_externalids.GraphTypeDefinitions.PublicationGQLModel.resolve_reference(id=self.createdby)
-        if publication is not None: return publication
-        facility = gql_externalids.GraphTypeDefinitions.FacilityGQLModel.resolve_reference(id=self.createdby)
-        if facility is not None: return facility
+        return gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.createdby)
+        
 
     @strawberry.field(description="""Who updated it""")
-    def changed_by(self) -> Optional[Union[UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel]]:
+    def changed_by(self) -> Optional["UserGQLModel"]:
         #sync method which returns Awaitable :)
         if self.changedby is None: return None
-        user = gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.changedby)
-        if user is not None: return user
-        group = gql_externalids.GraphTypeDefinitions.GroupGQLModel.resolve_reference(id=self.changedby)
-        if group is not None: return group
-        project = gql_externalids.GraphTypeDefinitions.ProjectGQLModel.resolve_reference(id=self.changedby)
-        if project is not None: return project
-        publication = gql_externalids.GraphTypeDefinitions.PublicationGQLModel.resolve_reference(id=self.changedby)
-        if publication is not None: return publication
-        facility = gql_externalids.GraphTypeDefinitions.FacilityGQLModel.resolve_reference(id=self.changedby)
-        if facility is not None: return facility
+        return gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.changedby)
+        
 
     @strawberry.field(description="""Inner id""")
     def inner_id(self) -> strawberry.ID:

@@ -21,10 +21,14 @@ def getLoaders(info):
 # - ma odlisnou implementaci v porovnani s modelem, za ktery jste odpovedni
 #
 ###########################################################################################################################
+@strawberry.field(description="""All external ids related to the entity""")
 async def resolve_external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
-    loader = getLoaders(info=info).externalids_inner_id
-    result = await loader.load(self.id)
+    ##loader = getLoaders(info=info).externalids_inner_id
+    ##result = await loader.load(self.id)
+    loader = getLoaders(info=info).externalids
+    result = await loader.filter_by(inner_id=self.id)
     return result
+
 
 @strawberry.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
@@ -42,7 +46,7 @@ class UserGQLModel:
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
     #     return await resolve_external_ids(self, info)
      
-    external_ids = strawberry.field(resolver=resolve_external_ids)
+    external_ids = resolve_external_ids
     
     
 @strawberry.federation.type(extend=True, keys=["id"])
@@ -60,7 +64,7 @@ class GroupGQLModel:
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
     #     return await resolve_external_ids(self, info)
     
-    external_ids = strawberry.field(resolver=resolve_external_ids)
+    external_ids = resolve_external_ids
     
 @strawberry.federation.type(extend=True, keys=["id"])
 class ProjectGQLModel:
@@ -77,7 +81,7 @@ class ProjectGQLModel:
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
     #     return await resolve_external_ids(self, info)
     
-    external_ids = strawberry.field(resolver=resolve_external_ids)
+    external_ids = resolve_external_ids
     
 @strawberry.federation.type(extend=True, keys=["id"])
 class PublicationGQLModel:
@@ -94,7 +98,7 @@ class PublicationGQLModel:
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
     #     return await resolve_external_ids(self, info)
     
-    external_ids = strawberry.field(resolver=resolve_external_ids)
+    external_ids = resolve_external_ids
 @strawberry.federation.type(extend=True, keys=["id"])
 class FacilityGQLModel:
 
@@ -110,4 +114,4 @@ class FacilityGQLModel:
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
     #     return await resolve_external_ids(self, info)
     
-    external_ids = strawberry.field(resolver=resolve_external_ids)
+    external_ids = resolve_external_ids
