@@ -145,8 +145,9 @@ class ExternalIdInsertGQLModel:
 @strawberry.input()
 class ExternalIdUpdateGQLModel:
     inner_id: strawberry.ID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
-    typeid_id: strawberry.ID = strawberry.field(default=None, description="Type of external id")
+    typeid_id: Optional[strawberry.ID] = strawberry.field(default=None, description="Type of external id")
     outer_id: strawberry.ID = strawberry.field(default=None, description="Key used by other systems")
+    
 
 @strawberry.type()
 class ExternalIdResultGQLModel:
@@ -189,4 +190,28 @@ async def externalid_delete(self, info: strawberry.types.Info, externalid: Exter
     else:
         result.id = None
         result.msg = "fail"
+    return result
+
+@strawberry.mutation(description="Updates an external ID with a new external ID")
+async def externalid_update(self, info: strawberry.types.Info, externalid: ExternalIdUpdateGQLModel) -> ExternalIdResultGQLModel:
+    loader = getLoaders(info).externalids
+    result = ExternalIdResultGQLModel()
+
+    # Fetch the existing entity using the provided parameters
+    rows = await loader.filter_by(inner_id=externalid.inner_id, outer_id=externalid.outer_id)
+    row = next(rows, None)
+
+    if row is not None:
+        row.inner_id = externalid.inner_id
+        row.typeid_id = externalid.typeid_id
+        row.outer_id = externalid.outer_id
+        
+        await loader.update(row)
+
+        result.msg = "ok"
+        result.id = row.id
+    else:
+        result.id = None
+        result.msg = "fail"
+
     return result

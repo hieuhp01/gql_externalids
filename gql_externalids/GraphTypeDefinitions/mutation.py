@@ -8,6 +8,9 @@ class Mutation:
 
     from .externalIdGQLModel import externalid_delete
     externalid_delete = externalid_delete
+    
+    from .externalIdGQLModel import externalid_update
+    externalid_update = externalid_update
 
     from.externalIdTypeGQLModel import externaltypeid_insert
     externaltypeid_insert = externaltypeid_insert
