@@ -40,3 +40,18 @@ pytest --cov-report term-missing --cov=gql_externalids tests
 Linux demo run:
 DEMO=true uvicorn main:app --reload
 pip install -r requirements.txt --force
+
+# Requirements:
+<br/><br/>
+EXTERNALIDS (2 studenti) Phung Hieu QUACH, Minh Dung NGUYEN
+Entity (FacilityGQLModel, FacilityTypeGQLModel)
+Rozšiřte UserGQLModel, GroupGQLModel, FacilityGQLModel, ProjectGQLModel, PublicationGQLModel o práci s ID z jiných informačních systémů,
+Modely v databázi pomocí SQLAlchemy, API endpoint typu GraphQL s pomocí knihovny Strawberry.
+Přístup k databázi řešte důsledně přes AioDataloder, resp. (https://github.com/hrbolek/uoishelpers/blob/main/uoishelpers/dataloaders.py).
+Zabezpečte kompletní CRUD operace nad entitami ExternalIdModel, ExternalIdTypeModel, ExternalIdCategoryModel
+CUD operace jako návratový typ nejméně se třemi prvky id, msg a „entityresult“ (pojmenujte adekvátně podle dotčené entity), vhodné přidat možnost nadřízené entity, speciálně pro operaci D.
+Řešte autorizaci operací (permission classes).
+Kompletní CRUD dotazy na GQL v souboru externalids_queries.json (dictionary), jméno klíče nechť vhodně identifikuje operaci, hodnota je dictionary s klíči query (obsahuje parametrický dotaz) nebo mutation (obsahuje parametrické mutation) a variables (obsahuje dictionary jako testovací hodnoty).
+Kompletní popisy API v kódu (description u GQLModelů) a popisy DB vrstvy (comment u DBModelů).
+Zabezpečte více jak 90% code test coverage (standard pytest).
+<br/><br/>
