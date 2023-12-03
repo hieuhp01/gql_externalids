@@ -2,6 +2,7 @@ import strawberry
 import datetime
 from typing import Union, Optional, List, Annotated
 import gql_externalids.GraphTypeDefinitions
+from uuid import UUID
 
 def getLoaders(info):
     return info.context["all"]
@@ -33,7 +34,7 @@ from .externalIdTypeGQLModel import ExternalIdTypeGQLModel
 )
 class ExternalIdGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: strawberry.ID):
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
         if id is None: return None
         loader = getLoaders(info=info).externalids
         print(loader, flush=True)
@@ -45,7 +46,7 @@ class ExternalIdGQLModel:
         return result
 
     @strawberry.field(description="""Primary key""")
-    def id(self) -> strawberry.ID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""Timestamp""")
@@ -71,7 +72,7 @@ class ExternalIdGQLModel:
         
 
     @strawberry.field(description="""Inner id""")
-    def inner_id(self) -> strawberry.ID:
+    def inner_id(self) -> UUID:
         return self.inner_id
 
     @strawberry.field(description="""Outer id""")
@@ -101,9 +102,9 @@ class ExternalIdGQLModel:
 async def internal_id(
     self,
     info: strawberry.types.Info,
-    typeid_id: strawberry.ID,
+    typeid_id: UUID,
     outer_id: str,
-) -> Union[strawberry.ID, None]:
+) -> Union[UUID, None]:
     loader = getLoaders(info).externalids
     rows = await loader.filter_by(outer_id=outer_id, typeid_id=typeid_id)
     row = next(rows, None)
@@ -118,8 +119,8 @@ async def internal_id(
 async def external_ids(
     self,
     info: strawberry.types.Info,
-    inner_id: strawberry.ID,
-    typeid_id: Optional[strawberry.ID] = None,
+    inner_id: UUID,
+    typeid_id: Optional[UUID] = None,
 ) -> List[ExternalIdGQLModel]:
     loader = getLoaders(info).externalids
     if typeid_id is None:
@@ -136,22 +137,22 @@ async def external_ids(
 
 @strawberry.input()
 class ExternalIdInsertGQLModel:
-    inner_id: strawberry.ID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
-    typeid_id: strawberry.ID = strawberry.field(default=None, description="Type of external id")
-    outer_id: strawberry.ID = strawberry.field(default=None, description="Key used by other systems")
-    changedby: strawberry.Private[strawberry.ID] = None
-    createdby: strawberry.Private[strawberry.ID] = None
+    inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
+    typeid_id: UUID = strawberry.field(default=None, description="Type of external id")
+    outer_id: UUID = strawberry.field(default=None, description="Key used by other systems")
+    changedby: strawberry.Private[UUID] = None
+    createdby: strawberry.Private[UUID] = None
 
 @strawberry.input()
 class ExternalIdUpdateGQLModel:
-    inner_id: strawberry.ID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
-    typeid_id: Optional[strawberry.ID] = strawberry.field(default=None, description="Type of external id")
-    outer_id: strawberry.ID = strawberry.field(default=None, description="Key used by other systems")
+    inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
+    typeid_id: Optional[UUID] = strawberry.field(default=None, description="Type of external id")
+    outer_id: UUID = strawberry.field(default=None, description="Key used by other systems")
     
 
 @strawberry.type()
 class ExternalIdResultGQLModel:
-    id: Optional[strawberry.ID] = strawberry.field(default=None, description="Primary key of table row")
+    id: Optional[UUID] = strawberry.field(default=None, description="Primary key of table row")
     msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)
 
     @strawberry.field(description="""Result of drone operation""")

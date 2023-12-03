@@ -2,6 +2,7 @@ import strawberry
 import datetime
 from typing import Optional, Union, List, Annotated
 import gql_externalids.GraphTypeDefinitions
+from uuid import UUID
 
 from .externalIdCategoryGQLModel import ExternalIdCategoryGQLModel
 
@@ -24,7 +25,7 @@ FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
 )
 class ExternalIdTypeGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: strawberry.ID):
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
         if id is None: return None
         loader = getLoaders(info=info).externaltypeids
         result = await loader.load(id)
@@ -35,7 +36,7 @@ class ExternalIdTypeGQLModel:
         return result
 
     @strawberry.field(description="""Primary key""")
-    def id(self) -> strawberry.ID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""Type name""")
@@ -83,7 +84,7 @@ async def externalidtype_page(self, info: strawberry.types.Info, skip: Optional[
     return rows
 
 @strawberry.field(description="""Rows of externaltypeids""")
-async def externalidtype_by_id(self, info: strawberry.types.Info, id: strawberry.ID) -> Optional[ExternalIdTypeGQLModel]:
+async def externalidtype_by_id(self, info: strawberry.types.Info, id: UUID) -> Optional[ExternalIdTypeGQLModel]:
     result = await ExternalIdTypeGQLModel.resolve_reference(info, id)
     return result
 
@@ -99,23 +100,23 @@ class ExternalIdTypeInsertGQLModel:
     name: str = strawberry.field(default=None, description="Name of type")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of type")
     urlformat: Optional[str] = strawberry.field(default=None, description="Format for conversion of id into url link")
-    id: Optional[strawberry.ID] = strawberry.field(default=None, description="Could be uuid primary key")
-    category_id: Optional[strawberry.ID] = strawberry.field(default=None, description="Category of type")
-    createdby: strawberry.Private[strawberry.ID] = None
+    id: Optional[UUID] = strawberry.field(default=None, description="Could be uuid primary key")
+    category_id: Optional[UUID] = strawberry.field(default=None, description="Category of type")
+    createdby: strawberry.Private[UUID] = None
 
 @strawberry.input()
 class ExternalIdTypeUpdateGQLModel:
-    id: strawberry.ID = strawberry.field(default=None, description="Primary key")
+    id: UUID = strawberry.field(default=None, description="Primary key")
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
     name: Optional[str] = strawberry.field(default=None, description="Name of type")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of type")
     urlformat: Optional[str] = strawberry.field(default=None, description="Format for conversion of id into url link")
-    category_id: Optional[strawberry.ID] = strawberry.field(default=None, description="Category of type")
-    changedby: strawberry.Private[strawberry.ID] = None
+    category_id: Optional[UUID] = strawberry.field(default=None, description="Category of type")
+    changedby: strawberry.Private[UUID] = None
     
 @strawberry.type()
 class ExternalIdTypeResultGQLModel:
-    id: Optional[strawberry.ID] = strawberry.field(default=None, description="Primary key of table row")
+    id: Optional[UUID] = strawberry.field(default=None, description="Primary key of table row")
     msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)
 
     @strawberry.field(description="""Result of insert operation""")

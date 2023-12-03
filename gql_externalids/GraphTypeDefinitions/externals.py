@@ -1,5 +1,6 @@
 import strawberry
 from typing import List
+from uuid import UUID
 
 from .externalIdGQLModel import ExternalIdGQLModel
 
@@ -33,10 +34,10 @@ async def resolve_external_ids(self, info: strawberry.types.Info) -> List[Extern
 @strawberry.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
 
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: UUID = strawberry.federation.field(external=True)
 
     @classmethod
-    async def resolve_reference(cls, id: strawberry.ID):
+    async def resolve_reference(cls, id: UUID):
         if id is None:
             return None
         return UserGQLModel(id=id)
@@ -52,10 +53,10 @@ class UserGQLModel:
 @strawberry.federation.type(extend=True, keys=["id"])
 class GroupGQLModel:
 
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: UUID = strawberry.federation.field(external=True)
 
     @classmethod
-    async def resolve_reference(cls, id: strawberry.ID):
+    async def resolve_reference(cls, id: UUID):
         if id is None:
             return None
         return GroupGQLModel(id=id)
@@ -69,10 +70,10 @@ class GroupGQLModel:
 @strawberry.federation.type(extend=True, keys=["id"])
 class ProjectGQLModel:
 
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: UUID = strawberry.federation.field(external=True)
 
     @classmethod
-    async def resolve_reference(cls, id: strawberry.ID):
+    async def resolve_reference(cls, id: UUID):
         if id is None:
             return None
         return ProjectGQLModel(id=id)
@@ -86,10 +87,10 @@ class ProjectGQLModel:
 @strawberry.federation.type(extend=True, keys=["id"])
 class PublicationGQLModel:
 
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: UUID = strawberry.federation.field(external=True)
 
     @classmethod
-    async def resolve_reference(cls, id: strawberry.ID):
+    async def resolve_reference(cls, id: UUID):
         if id is None:
             return None
         return PublicationGQLModel(id=id)
@@ -102,10 +103,10 @@ class PublicationGQLModel:
 @strawberry.federation.type(extend=True, keys=["id"])
 class FacilityGQLModel:
 
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: UUID = strawberry.federation.field(external=True)
 
     @classmethod
-    async def resolve_reference(cls, id: strawberry.ID):
+    async def resolve_reference(cls, id: UUID):
         if id is None:
             return None
         return FacilityGQLModel(id=id)

@@ -2,6 +2,7 @@ import strawberry
 import datetime
 from typing import Optional, List, Union, Annotated, Type
 import gql_externalids.GraphTypeDefinitions
+from uuid import UUID
 
 
 def getLoaders(info):
@@ -23,7 +24,7 @@ FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
 )
 class ExternalIdCategoryGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: strawberry.ID):
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
         if id is None: return None
         loader = getLoaders(info=info).externalcategoryids
         result = await loader.load(id)
@@ -34,7 +35,7 @@ class ExternalIdCategoryGQLModel:
         return result
 
     @strawberry.field(description="""Primary key""")
-    def id(self) -> strawberry.ID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""Category name""")
@@ -92,20 +93,20 @@ import datetime
 class ExternalIdCategoryInsertGQLModel:
     name: str = strawberry.field(default=None, description="Name of type")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of type")
-    id: Optional[strawberry.ID] = strawberry.field(default=None, description="Could be uuid primary key")
-    createdby: strawberry.Private[strawberry.ID] = None
+    id: Optional[UUID] = strawberry.field(default=None, description="Could be uuid primary key")
+    createdby: strawberry.Private[UUID] = None
 
 @strawberry.input()
 class ExternalIdCategoryUpdateGQLModel:
-    id: strawberry.ID = strawberry.field(default=None, description="Primary key")
+    id: UUID = strawberry.field(default=None, description="Primary key")
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
     name: Optional[str] = strawberry.field(default=None, description="Name of category")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of category")
-    changedby: strawberry.Private[strawberry.ID] = None
+    changedby: strawberry.Private[UUID] = None
     
 @strawberry.type()
 class ExternalIdCategoryResultGQLModel:
-    id: Optional[strawberry.ID] = strawberry.field(default=None, description="Primary key of table row")
+    id: Optional[UUID] = strawberry.field(default=None, description="Primary key of table row")
     msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)
 
     @strawberry.field(description="""Result of insert operation""")
