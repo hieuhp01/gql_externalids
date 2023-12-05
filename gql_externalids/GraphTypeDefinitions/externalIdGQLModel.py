@@ -149,6 +149,12 @@ class ExternalIdUpdateGQLModel:
     typeid_id: Optional[UUID] = strawberry.field(default=None, description="Type of external id")
     outer_id: UUID = strawberry.field(default=None, description="Key used by other systems")
     
+@strawberry.input()
+class ExternalIdDeleteGQLModel:
+    inner_id: strawberry.ID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
+    typeid_id: strawberry.ID = strawberry.field(default=None, description="Type of external id")
+    outer_id: strawberry.ID = strawberry.field(default=None, description="Key used by other systems")
+    
 
 @strawberry.type()
 class ExternalIdResultGQLModel:
@@ -180,7 +186,7 @@ async def externalid_insert(self, info: strawberry.types.Info, externalid: Exter
     return result
 
 @strawberry.mutation(description="definies a new external id for an entity")
-async def externalid_delete(self, info: strawberry.types.Info, externalid: ExternalIdUpdateGQLModel) -> ExternalIdResultGQLModel:
+async def externalid_delete(self, info: strawberry.types.Info, externalid: ExternalIdDeleteGQLModel) -> ExternalIdResultGQLModel:
     loader = getLoaders(info).externalids
     result = ExternalIdResultGQLModel()
     rows = await loader.filter_by(inner_id=externalid.inner_id, typeid_id=externalid.typeid_id, outer_id=externalid.outer_id)
