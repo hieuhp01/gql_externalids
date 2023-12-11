@@ -1,4 +1,4 @@
-from uuid import uuid4
+import uuid
 from sqlalchemy import (
     Column,
     String,
@@ -7,22 +7,22 @@ from sqlalchemy import (
 
 
 def newUuidAsString():
-    return f"{uuid4()}"
+    return uuid.uuid4()
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(String, primary_key=True, unique=True, default=uuid4)
+        return Column(Uuid, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name, String, primary_key=True, unique=True, default=uuid4
+            name, Uuid, primary_key=True, unique=True, default=newUuidAsString
         )
 
 
 def UUIDFKey(comment = None, ForeignKey=None, nullable=False):
     if ForeignKey is None:
         return Column(
-             String, index=True, nullable=nullable
+             Uuid, index=True, nullable=nullable
         )
     else:
         return Column(
