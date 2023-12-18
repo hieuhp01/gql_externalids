@@ -5,7 +5,7 @@ import gql_externalids.GraphTypeDefinitions
 from uuid import UUID
 
 def getLoaders(info):
-    return info.context["all"]
+    return info.context["loaders"]
 
 def getUser(info):
     return info.context["user"]
@@ -25,7 +25,6 @@ from .externalIdTypeGQLModel import ExternalIdTypeGQLModel
 # - venujte pozornost metode resolve reference, tato metoda je dulezita pro komunikaci mezi prvky federace,
 #
 ###########################################################################################################################
-
 
 
 @strawberry.federation.type(

@@ -1,6 +1,7 @@
 import sqlalchemy
 import sys
 import asyncio
+import logging
 
 import pytest
 
@@ -27,7 +28,7 @@ async def prepare_in_memory_sqllite():
     return async_session_maker
 
 
-from gql_externalids.DBFeeder import get_demodata
+from gql_externalids.utils.DBFeeder import get_demodata
 
 
 async def prepare_demodata(async_session_maker):
@@ -46,12 +47,59 @@ async def prepare_demodata(async_session_maker):
     )
 
 
-from gql_externalids.Dataloaders import createLoaders_3
+from gql_externalids.utils.Dataloaders import createLoadersContext
 
 
-async def createContext(asyncSessionMaker):
-    return {
-        "asyncSessionMaker": asyncSessionMaker,
-        "all": await createLoaders_3(asyncSessionMaker),
-        "user": {"id": "f8089aa6-2c4a-4746-9503-105fcc5d054c"}
+def createContext(asyncSessionMaker, withuser=True):
+    loadersContext = createLoadersContext(asyncSessionMaker)
+    user = {
+        "id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+        "name": "John",
+        "surname": "Newbie",
+        "email": "john.newbie@world.com"
     }
+    if withuser:
+        loadersContext["user"] = user
+    
+    return loadersContext
+
+def createInfo(asyncSessionMaker, withuser=True):
+    class Request():
+        @property
+        def headers(self):
+            return {"Authorization": "Bearer 2d9dc5ca-a4a2-11ed-b9df-0242ac120003"}
+        
+    class Info():
+        @property
+        def context(self):
+            context = createContext(asyncSessionMaker, withuser=withuser)
+            context["request"] = Request()
+            return context
+        
+    return Info()
+
+
+from gql_externalids.GraphTypeDefinitions import schema
+
+def CreateSchemaFunction():
+    async def result(query, variables={}):
+
+        async_session_maker = await prepare_in_memory_sqllite()
+        await prepare_demodata(async_session_maker)
+        context_value = createContext(async_session_maker)
+        logging.debug(f"query for {query} with {variables}")
+        print(f"query for {query} with {variables}")
+        resp = await schema.execute(
+            query=query, 
+            variable_values=variables, 
+            context_value=context_value
+        )
+
+        assert resp.errors is None
+        respdata = resp.data
+        logging.debug(f"response: {respdata}")
+
+        result = {"data": respdata, "errors": resp.errors}
+        return result
+
+    return result

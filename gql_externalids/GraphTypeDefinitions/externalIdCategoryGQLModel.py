@@ -1,16 +1,26 @@
 import strawberry
 import datetime
+import typing
 from typing import Optional, List, Union, Annotated, Type
 import gql_externalids.GraphTypeDefinitions
 from uuid import UUID
 
+from gql_externalids.utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
+from .BaseGQLModel import BaseGQLModel
 
-def getLoaders(info):
-    return info.context["all"]
-
-def getUser(info):
-    return info.context["user"]
-
+from gql_externalids.GraphResolvers import (
+    resolve_id,
+    resolve_name,
+    resolve_name_en,
+    resolve_lastchange,
+    resolve_created,
+    resolve_createdby,
+    resolve_changedby,
+    createRootResolver_by_id,
+    createRootResolver_by_page,
+    createAttributeScalarResolver,
+    createAttributeVectorResolver
+) 
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
 GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".externals")]
@@ -22,51 +32,24 @@ FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
     keys=["id"],
     description="""Entity representing an external category id ()""",
 )
-class ExternalIdCategoryGQLModel:
+class ExternalIdCategoryGQLModel(BaseGQLModel):
+    """
+    """
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
-        if id is None: return None
-        loader = getLoaders(info=info).externalcategoryids
-        result = await loader.load(id)
-        if result is not None:
-            result._type_definition = cls._type_definition  # little hack :)
-            result.__strawberry_definition__ = cls._type_definition # some version of strawberry changed :(
+    def getLoader(cls, info):
+        return getLoadersFromInfo(info).externalidcategories
+    
+    # @classmethod
+    # async def resolve_reference(cls, info: strawberry.types.Info, id: uuid.UUID):
+    # implementation is inherited
 
-        return result
-
-    @strawberry.field(description="""Primary key""")
-    def id(self) -> UUID:
-        return self.id
-
-    @strawberry.field(description="""Category name""")
-    def name(self) -> str:
-        return self.name
-
-    @strawberry.field(description="""Category name (En)""")
-    def name_en(self) -> str:
-        return self.name_en
-
-    @strawberry.field(description="""Timestamp""")
-    def lastchange(self) -> datetime.datetime:
-        return self.lastchange
-
-    @strawberry.field(description="""Initial timestamp""")
-    def created(self) -> datetime.datetime:
-        return self.created
-
-    @strawberry.field(description="""Who created it""")
-    def created_by(self) -> Optional["UserGQLModel"]:
-        #sync method which returns Awaitable :)
-        if self.createdby is None: return None
-        return gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.createdby)
-        
-
-    @strawberry.field(description="""Who updated it""")
-    def changed_by(self) -> Optional["UserGQLModel"]:
-        #sync method which returns Awaitable :)
-        if self.changedby is None: return None
-        return gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.changedby)
-
+    id = resolve_id
+    name = resolve_name
+    changedby = resolve_changedby
+    lastchange = resolve_lastchange
+    created = resolve_created
+    createdby = resolve_createdby
+    name_en = resolve_name_en
 
 #####################################################################
 #
@@ -74,9 +57,9 @@ class ExternalIdCategoryGQLModel:
 #
 #####################################################################
 
-@strawberry.field(description="""Rows of externalcategoryids""")
-async def externalidcategory_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 100) -> List[ExternalIdCategoryGQLModel]:
-    loader = getLoaders(info).externalcategoryids
+@strawberry.field(description="""Rows of externalidcategories""")
+async def externalidcategory_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 100) -> typing.List[ExternalIdCategoryGQLModel]:
+    loader = getLoadersFromInfo(info).externalidcategories
     rows = await loader.page(skip=skip, limit=limit)
     return rows
 
@@ -116,25 +99,25 @@ class ExternalIdCategoryResultGQLModel:
     
 @strawberry.mutation(description="defines a new external id category for an entity")
 async def externalidcategory_insert(self, info: strawberry.types.Info, externalidcategory: ExternalIdCategoryInsertGQLModel) -> ExternalIdCategoryResultGQLModel:
-    actingUser = getUser(info)
-    loader = getLoaders(info).externalcategoryids
-    externalidcategory.createdby = actingUser["id"]
+    actingUser = getUserFromInfo(info)
+    loader = getLoadersFromInfo(info).externalidcategories
+    externalidcategory.createdby = UUID(actingUser["id"])
     
-    result = ExternalIdCategoryResultGQLModel()
     row = await loader.insert(externalidcategory)
+    result = ExternalIdCategoryResultGQLModel(id=row.id,msg="ok")
     result.id = row.id
     result.msg = "ok"
 
     return result
 
 @strawberry.mutation(description="Update existing external id category for an entity")
-async def externalidcategory_update(self, info: strawberry.types.Info, externaltypeid: ExternalIdCategoryUpdateGQLModel) -> ExternalIdCategoryResultGQLModel:
-    actingUser = getUser(info)
-    loader = getLoaders(info).externalcategoryids
-    externaltypeid.changedby = actingUser["id"]
+async def externalidcategory_update(self, info: strawberry.types.Info, externalidcategory: ExternalIdCategoryUpdateGQLModel) -> ExternalIdCategoryResultGQLModel:
+    actingUser = getUserFromInfo(info)
+    loader = getLoadersFromInfo(info).externalidcategories
+    externalidcategory.changedby = UUID(actingUser["id"])
     
-    result = ExternalIdCategoryResultGQLModel()
-    row = await loader.update(externaltypeid)
+    result = ExternalIdCategoryResultGQLModel(id=externalidcategory.id,msg="ok")
+    row = await loader.update(externalidcategory)
     if row is None:
         result.id = None
         result.msg = "fail"
@@ -143,4 +126,5 @@ async def externalidcategory_update(self, info: strawberry.types.Info, externalt
         result.msg = "ok"
 
     return result
+
 

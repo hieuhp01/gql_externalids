@@ -13,7 +13,7 @@ from strawberry.fastapi import GraphQLRouter
 from gql_externalids.DBDefinitions import startEngine, ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
-from gql_externalids.DBFeeder import initDB
+from gql_externalids.utils.DBFeeder import initDB
 
 connectionString = ComposeConnectionString()
 
@@ -76,7 +76,7 @@ async def RunOnceAndReturnSessionMaker():
 
 from strawberry.asgi import GraphQL
 
-from gql_externalids.Dataloaders import createLoaders_3
+from gql_externalids.utils.Dataloaders import createLoaders_3
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""
 
