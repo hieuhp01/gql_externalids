@@ -1,16 +1,26 @@
 import strawberry
 import datetime
+import typing
 from typing import Optional, Union, List, Annotated
 import gql_externalids.GraphTypeDefinitions
 from uuid import UUID
 
-from .externalIdCategoryGQLModel import ExternalIdCategoryGQLModel
+from gql_externalids.utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
+from .BaseGQLModel import BaseGQLModel
 
-def getLoaders(info):
-    return info.context["all"]
-
-def getUser(info):
-    return info.context["user"]
+from gql_externalids.GraphResolvers import (
+    resolve_id,
+    resolve_name,
+    resolve_name_en,
+    resolve_lastchange,
+    resolve_created,
+    resolve_createdby,
+    resolve_changedby,
+    createRootResolver_by_id,
+    createRootResolver_by_page,
+    createAttributeScalarResolver,
+    createAttributeVectorResolver
+) 
 
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
@@ -19,57 +29,37 @@ ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
 PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
 FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
 
+ExternalIdCategoryGQLModel = Annotated["ExternalIdCategoryGQLModel", strawberry.lazy(".externalIdCategoryGQLModel")]
+
 @strawberry.federation.type(
     keys=["id"],
     description="""Entity representing an external type id (like SCOPUS identification / id)""",
 )
-class ExternalIdTypeGQLModel:
+class ExternalIdTypeGQLModel(BaseGQLModel):
+    """
+    """
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
-        if id is None: return None
-        loader = getLoaders(info=info).externaltypeids
-        result = await loader.load(id)
-        if result is not None:
-            result._type_definition = cls._type_definition  # little hack :)
-            result.__strawberry_definition__ = cls._type_definition # some version of strawberry changed :(
-            
-        return result
+    def getLoader(cls, info):
+        return getLoadersFromInfo(info).externaltypeids
+    
+    # @classmethod
+    # async def resolve_reference(cls, info: strawberry.types.Info, id: uuid.UUID):
+    # implementation is inherited
 
-    @strawberry.field(description="""Primary key""")
-    def id(self) -> UUID:
-        return self.id
+    id = resolve_id
+    name = resolve_name
+    changedby = resolve_changedby
+    lastchange = resolve_lastchange
+    created = resolve_created
+    createdby = resolve_createdby
+    name_en = resolve_name_en
 
-    @strawberry.field(description="""Type name""")
-    def name(self) -> str:
-        return self.name
-
-    @strawberry.field(description="""Type name (en)""")
-    def name_en(self) -> str:
-        return self.name_en
-
-    @strawberry.field(description="""Timestamp""")
-    def lastchange(self) -> datetime.datetime:
-        return self.lastchange
-
-    @strawberry.field(description="""Initial timestamp""")
-    def created(self) -> datetime.datetime:
-        return self.created
-
-    @strawberry.field(description="""Who created it""")
-    def created_by(self) -> Optional["UserGQLModel"]:
-        #sync method which returns Awaitable :)
-        result = gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.createdby)
-        return result
-
-    @strawberry.field(description="""Who updated it""")
-    def changed_by(self) -> Optional["UserGQLModel"]:
-        #sync method which returns Awaitable :)
-        return gql_externalids.GraphTypeDefinitions.UserGQLModel.resolve_reference(id=self.changedby)
 
     @strawberry.field(description="""Category which belongs to""")
-    def category(self, info: strawberry.types.Info) -> Optional["ExternalIdCategoryGQLModel"]:
-        #sync method which returns Awaitable :)
-        return ExternalIdCategoryGQLModel.resolve_reference(info, id=self.category_id)
+    async def category(self, info: strawberry.types.Info) -> typing.Optional["ExternalIdCategoryGQLModel"]:
+        from .externalIdCategoryGQLModel import ExternalIdCategoryGQLModel
+        result = await ExternalIdCategoryGQLModel.resolve_reference(info, self.category_id)
+        return result
 
 
 #####################################################################
@@ -77,11 +67,24 @@ class ExternalIdTypeGQLModel:
 # Special fields for query
 #
 #####################################################################
-@strawberry.field(description="""Rows of externaltypeids""")
-async def externalidtype_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 100) -> List[ExternalIdTypeGQLModel]:
-    loader = getLoaders(info).externaltypeids
-    rows = await loader.page(skip=skip, limit=limit)
-    return rows
+from dataclasses import dataclass
+from uoishelpers.resolvers import createInputs
+
+@createInputs
+@dataclass
+class ExternalIdTypeWhereFilter:
+    name: str
+    name_en: str
+    urlformat: str
+    
+    category_id: UUID
+
+externalid_type_page = createRootResolver_by_page(
+    scalarType=ExternalIdTypeGQLModel,
+    whereFilterType=ExternalIdTypeWhereFilter,
+    description='Retrieves the externalid types',
+    loaderLambda=lambda info: getLoadersFromInfo(info).externaltypeids
+)
 
 @strawberry.field(description="""Rows of externaltypeids""")
 async def externalidtype_by_id(self, info: strawberry.types.Info, id: UUID) -> Optional[ExternalIdTypeGQLModel]:
@@ -126,12 +129,12 @@ class ExternalIdTypeResultGQLModel:
     
 @strawberry.mutation(description="defines a new external type id for an entity")
 async def externaltypeid_insert(self, info: strawberry.types.Info, externaltypeid: ExternalIdTypeInsertGQLModel) -> ExternalIdTypeResultGQLModel:
-    actingUser = getUser(info)
-    loader = getLoaders(info).externaltypeids
-    externaltypeid.createdby = actingUser["id"]
+    actingUser = getUserFromInfo(info)
+    loader = getLoadersFromInfo(info).externaltypeids
+    externaltypeid.createdby = UUID(actingUser["id"])
     
-    result = ExternalIdTypeResultGQLModel()
     row = await loader.insert(externaltypeid)
+    result = ExternalIdTypeResultGQLModel(id=row.id,msg="ok")
     result.id = row.id
     result.msg = "ok"
 
@@ -139,11 +142,11 @@ async def externaltypeid_insert(self, info: strawberry.types.Info, externaltypei
 
 @strawberry.mutation(description="Update existing external type id for an entity")
 async def externaltypeid_update(self, info: strawberry.types.Info, externaltypeid: ExternalIdTypeUpdateGQLModel) -> ExternalIdTypeResultGQLModel:
-    actingUser = getUser(info)
-    loader = getLoaders(info).externaltypeids
-    externaltypeid.changedby = actingUser["id"]
+    actingUser = getUserFromInfo(info)
+    loader = getLoadersFromInfo(info).externaltypeids
+    externaltypeid.changedby = UUID(actingUser["id"])
     
-    result = ExternalIdTypeResultGQLModel()
+    result = ExternalIdTypeResultGQLModel(id=externaltypeid.id,msg="ok")
     row = await loader.update(externaltypeid)
     if row is None:
         result.id = None

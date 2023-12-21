@@ -124,17 +124,17 @@ def resolve_created(self) -> typing.Optional[datetime.datetime]:
     return self.created
 
 async def resolve_user(user_id):
-    from GraphTypeDefinitions.externals import UserGQLModel
+    from gql_externalids.GraphTypeDefinitions.externals import UserGQLModel
     result = None if user_id is None else await UserGQLModel.resolve_reference(user_id)
     return result
     
 @strawberry.field(description="""Who created entity""")
 async def resolve_createdby(self) -> typing.Optional["UserGQLModel"]:
-    return await resolve_user(self.created_by)
+    return await resolve_user(user_id=self.createdby)
 
 @strawberry.field(description="""Who made last change""")
 async def resolve_changedby(self) -> typing.Optional["UserGQLModel"]:
-    return await resolve_user(self.changedby)
+    return await resolve_user(user_id=self.changedby)
 
 # @strawberry.field(description="""Who made last change""")
 # async def resolve_rbacobject(self) -> typing.Optional["UserGQLModel"]:

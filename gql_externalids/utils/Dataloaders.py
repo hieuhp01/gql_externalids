@@ -8,8 +8,8 @@ from gql_externalids.DBDefinitions import (
     )
 
 dbModels = {
-    "externalidtypes": ExternalIdTypeModel,
-    "externalidcategories": ExternalIdCategoryModel,
+    "externaltypeids": ExternalIdTypeModel,
+    "externalcategoryids": ExternalIdCategoryModel,
     "externalids": ExternalIdModel
 }
 
@@ -341,13 +341,13 @@ def createIdLoader(asyncSessionMaker, dbModel) :
     return Loader(cache=True)
 
 class Loaders:
-    externalidtypes = None
-    externalidcategories = None
+    externaltypeids = None
+    externalcategoryids = None
     externalids = None
     pass
 
 
-async def createLoaders_3(asyncSessionMaker, models=dbModels) -> Loaders:
+def createLoaders_3(asyncSessionMaker, models=dbModels) -> Loaders:
 
     class Loaders:
         @property

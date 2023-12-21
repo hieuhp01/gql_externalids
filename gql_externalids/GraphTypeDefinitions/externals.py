@@ -4,8 +4,7 @@ from uuid import UUID
 
 from .externalIdGQLModel import ExternalIdGQLModel
 
-def getLoaders(info):
-    return info.context["all"]
+from gql_externalids.utils.Dataloaders import getLoadersFromInfo
 
 ###########################################################################################################################
 #
@@ -26,7 +25,7 @@ def getLoaders(info):
 async def resolve_external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
     ##loader = getLoaders(info=info).externalids_inner_id
     ##result = await loader.load(self.id)
-    loader = getLoaders(info=info).externalids
+    loader = getLoadersFromInfo(info=info).externalids
     result = await loader.filter_by(inner_id=self.id)
     return result
 

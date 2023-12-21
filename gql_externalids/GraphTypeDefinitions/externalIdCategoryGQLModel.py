@@ -37,7 +37,7 @@ class ExternalIdCategoryGQLModel(BaseGQLModel):
     """
     @classmethod
     def getLoader(cls, info):
-        return getLoadersFromInfo(info).externalidcategories
+        return getLoadersFromInfo(info).externalcategoryids
     
     # @classmethod
     # async def resolve_reference(cls, info: strawberry.types.Info, id: uuid.UUID):
@@ -57,11 +57,22 @@ class ExternalIdCategoryGQLModel(BaseGQLModel):
 #
 #####################################################################
 
-@strawberry.field(description="""Rows of externalidcategories""")
-async def externalidcategory_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 100) -> typing.List[ExternalIdCategoryGQLModel]:
-    loader = getLoadersFromInfo(info).externalidcategories
-    rows = await loader.page(skip=skip, limit=limit)
-    return rows
+from dataclasses import dataclass
+from uoishelpers.resolvers import createInputs
+
+@createInputs
+@dataclass
+class ExternalIdCategoryWhereFilter:
+    name: str
+    name_en: str
+    
+
+externalid_category_page = createRootResolver_by_page(
+    scalarType=ExternalIdCategoryGQLModel,
+    whereFilterType=ExternalIdCategoryWhereFilter,
+    description='Retrieves the externalid categories',
+    loaderLambda=lambda info: getLoadersFromInfo(info).externalcategoryids
+)
 
 
 #####################################################################
@@ -100,7 +111,7 @@ class ExternalIdCategoryResultGQLModel:
 @strawberry.mutation(description="defines a new external id category for an entity")
 async def externalidcategory_insert(self, info: strawberry.types.Info, externalidcategory: ExternalIdCategoryInsertGQLModel) -> ExternalIdCategoryResultGQLModel:
     actingUser = getUserFromInfo(info)
-    loader = getLoadersFromInfo(info).externalidcategories
+    loader = getLoadersFromInfo(info).externalcategoryids
     externalidcategory.createdby = UUID(actingUser["id"])
     
     row = await loader.insert(externalidcategory)
@@ -113,7 +124,7 @@ async def externalidcategory_insert(self, info: strawberry.types.Info, externali
 @strawberry.mutation(description="Update existing external id category for an entity")
 async def externalidcategory_update(self, info: strawberry.types.Info, externalidcategory: ExternalIdCategoryUpdateGQLModel) -> ExternalIdCategoryResultGQLModel:
     actingUser = getUserFromInfo(info)
-    loader = getLoadersFromInfo(info).externalidcategories
+    loader = getLoadersFromInfo(info).externalcategoryids
     externalidcategory.changedby = UUID(actingUser["id"])
     
     result = ExternalIdCategoryResultGQLModel(id=externalidcategory.id,msg="ok")

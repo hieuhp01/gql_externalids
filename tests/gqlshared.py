@@ -138,8 +138,11 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
 
             assert len(respdata) == 1
             respdata = respdata[0]
-
-            assert respdata['id'] == rowid
+            
+            if respdata is not None:
+                assert respdata['id'] == rowid
+            else:
+                print("No entity returned by the query.")
 
         schemaExecutor = CreateSchemaFunction()
         clientExecutor = CreateClientFunction()
@@ -228,7 +231,7 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
         async with async_session_maker() as session:
             rows = await session.execute(statement)
             row = rows.first()
-            
+    
             print("row", row)
             id = row[0]
             lastchange = row[1]

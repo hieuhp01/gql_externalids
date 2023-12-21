@@ -16,11 +16,11 @@ class Query:
     from .externalIdGQLModel import internal_id
     internal_id = internal_id
 
-    from .externalIdTypeGQLModel import externalidtype_page
-    externalidtype_page = externalidtype_page
+    from .externalIdTypeGQLModel import externalid_type_page
+    externalidtype_page = externalid_type_page
 
     from .externalIdTypeGQLModel import externalidtype_by_id
     externalidtype_by_id = externalidtype_by_id
 
-    from .externalIdCategoryGQLModel import externalidcategory_page
-    externalidcategory_page = externalidcategory_page
+    from .externalIdCategoryGQLModel import externalid_category_page
+    externalidcategory_page = externalid_category_page
