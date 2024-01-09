@@ -79,9 +79,7 @@ class ExternalIdGQLModel(BaseGQLModel):
     @strawberry.field(description="""Type name of id""")
     async def type_name(self, info: strawberry.types.Info) -> Union[str, None]:
         result = await ExternalIdTypeGQLModel.resolve_reference(info=info, id=self.typeid_id)
-        if not result is None:
-            result = result.name
-        return result
+        return result.name if result else None
     
 #####################################################################
 #
@@ -100,10 +98,7 @@ async def internal_id(
     loader = getLoadersFromInfo(info).externalids
     rows = await loader.filter_by(outer_id=outer_id, typeid_id=typeid_id)
     row = next(rows, None)
-    if row is None:
-        return None
-    else:
-        return row.inner_id
+    return None if row is None else row.inner_id
 
 @strawberry.field(
     description="""Returns outer ids based on external id type and inner id value"""
@@ -115,10 +110,8 @@ async def external_ids(
     typeid_id: Optional[UUID] = None,
 ) -> List[ExternalIdGQLModel]:
     loader = getLoadersFromInfo(info).externalids
-    if typeid_id is None:
-        rows = await loader.filter_by(inner_id=inner_id)
-    else:
-        rows = await loader.filter_by(inner_id=inner_id, typeid_id=typeid_id)
+    filter_params = {"inner_id": inner_id, "typeid_id": typeid_id} if typeid_id else {"inner_id": inner_id}
+    rows = await loader.filter_by(**filter_params)
     return rows
     
 #####################################################################
@@ -131,7 +124,7 @@ async def external_ids(
 class ExternalIdInsertGQLModel:
     inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
     typeid_id: UUID = strawberry.field(default=None, description="Type of external id")
-    outer_id: UUID = strawberry.field(default=None, description="Key used by other systems")
+    outer_id: str = strawberry.field(default=None, description="Key used by other systems")
     changedby: strawberry.Private[UUID] = None
     createdby: strawberry.Private[UUID] = None
 
@@ -139,13 +132,15 @@ class ExternalIdInsertGQLModel:
 class ExternalIdUpdateGQLModel:
     inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
     typeid_id: Optional[UUID] = strawberry.field(default=None, description="Type of external id")
-    outer_id: UUID = strawberry.field(default=None, description="Key used by other systems")
+    outer_id: str = strawberry.field(default=None, description="Key used by other systems")
+    lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
     
 @strawberry.input()
 class ExternalIdDeleteGQLModel:
-    inner_id: strawberry.ID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
-    typeid_id: strawberry.ID = strawberry.field(default=None, description="Type of external id")
-    outer_id: strawberry.ID = strawberry.field(default=None, description="Key used by other systems")
+    inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
+    typeid_id: UUID = strawberry.field(default=None, description="Type of external id")
+    outer_id: str = strawberry.field(default=None, description="Key used by other systems")
+    lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
     
 
 @strawberry.type()
@@ -173,11 +168,10 @@ async def externalid_insert(self, info: strawberry.types.Info, externalid: Exter
         result.id = row.id
         result.msg = "ok"
     else:
-        result.id = row.id
-        result.msg = "fail"
+        result = {"id": row.id, "msg": "fail"}
     return result
 
-@strawberry.mutation(description="definies a new external id for an entity")
+@strawberry.mutation(description="Remove an external ID")
 async def externalid_delete(self, info: strawberry.types.Info, externalid: ExternalIdDeleteGQLModel) -> ExternalIdResultGQLModel:
     loader = getLoadersFromInfo(info).externalids
     result = ExternalIdResultGQLModel()

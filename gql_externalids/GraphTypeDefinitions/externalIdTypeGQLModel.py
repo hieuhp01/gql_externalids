@@ -148,12 +148,8 @@ async def externaltypeid_update(self, info: strawberry.types.Info, externaltypei
     
     result = ExternalIdTypeResultGQLModel(id=externaltypeid.id,msg="ok")
     row = await loader.update(externaltypeid)
-    if row is None:
-        result.id = None
-        result.msg = "fail"
-    else:
-        result.id = row.id
-        result.msg = "ok"
-
+    result.id = None if row is None else row.id
+    result.msg = "fail" if row is None else "ok"
+    
     return result
 

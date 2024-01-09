@@ -129,12 +129,8 @@ async def externalidcategory_update(self, info: strawberry.types.Info, externali
     
     result = ExternalIdCategoryResultGQLModel(id=externalidcategory.id,msg="ok")
     row = await loader.update(externalidcategory)
-    if row is None:
-        result.id = None
-        result.msg = "fail"
-    else:
-        result.id = row.id
-        result.msg = "ok"
+    result.id = None if row is None else row.id
+    result.msg = "fail" if row is None else "ok"
 
     return result
 

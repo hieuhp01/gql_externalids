@@ -37,9 +37,7 @@ class UserGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: UUID):
-        if id is None:
-            return None
-        return UserGQLModel(id=id)
+       return None if id is None else UserGQLModel(id=id)
 
     
     # @strawberry.field(description="""All external ids related to the user""")
@@ -56,9 +54,7 @@ class GroupGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: UUID):
-        if id is None:
-            return None
-        return GroupGQLModel(id=id)
+        return None if id is None else GroupGQLModel(id=id)
 
     # @strawberry.field(description="""All external ids related to the group""")
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
@@ -73,9 +69,7 @@ class ProjectGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: UUID):
-        if id is None:
-            return None
-        return ProjectGQLModel(id=id)
+        return None if id is None else ProjectGQLModel(id=id)
 
     # @strawberry.field(description="""All external ids related to the project""")
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
@@ -90,10 +84,8 @@ class PublicationGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: UUID):
-        if id is None:
-            return None
-        return PublicationGQLModel(id=id)
-
+        return None if id is None else PublicationGQLModel(id=id)
+    
     # @strawberry.field(description="""All external ids related to the publication""")
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
     #     return await resolve_external_ids(self, info)
@@ -106,9 +98,7 @@ class FacilityGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: UUID):
-        if id is None:
-            return None
-        return FacilityGQLModel(id=id)
+        return None if id is None else FacilityGQLModel(id=id)
 
     # @strawberry.field(description="""All external ids related to the facility""")
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
