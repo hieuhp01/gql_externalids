@@ -112,7 +112,6 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
         query = "query{" f"{queryEndpoint}" f"{content}" "}"
 
         append(queryname=f"{queryEndpoint}_{tableName}", query=query)
-        
 
         resp = await schemaExecutor(query)
         testResult(resp)
@@ -138,11 +137,8 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
 
             assert len(respdata) == 1
             respdata = respdata[0]
-            
-            if respdata is not None:
-                assert respdata['id'] == rowid
-            else:
-                print("No entity returned by the query.")
+
+            assert respdata['id'] == rowid
 
         schemaExecutor = CreateSchemaFunction()
         clientExecutor = CreateClientFunction()
@@ -154,26 +150,26 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
         for row in table:
             rowid = f"{row['id']}"
 
-            query = (
-                'query($id: UUID!) { _entities(representations: [{ __typename: '+ f'"{gqltype}", id: $id' + 
-                ' }])' +
-                '{' +
-                f'...on {gqltype}' + content +
-                '}' + 
-                '}')
+            # query = (
+            #     'query($id: UUID!) { _entities(representations: [{ __typename: '+ f'"{gqltype}", id: $id' + 
+            #     ' }])' +
+            #     '{' +
+            #     f'...on {gqltype}' + content +
+            #     '}' + 
+            #     '}')
 
-            variable_values = {"id": rowid}
+            # variable_values = {"id": rowid}
 
-            # query = ("query($rep: [_Any!]!)" + 
-            #     "{" +
-            #     "_entities(representations: $rep)" +
-            #     "{"+
-            #     f"    ...on {gqltype} {content}"+
-            #     "}"+
-            #     "}"
-            # )
+            query = ("query($rep: [_Any!]!)" + 
+                "{" +
+                "_entities(representations: $rep)" +
+                "{"+
+                f"    ...on {gqltype} {content}"+
+                "}"+
+                "}"
+            )
             
-            # variable_values = {"rep": [{"__typename": f"{gqltype}", "id": f"{rowid}"}]}
+            variable_values = {"rep": [{"__typename": f"{gqltype}", "id": f"{rowid}"}]}
 
             logging.info(f"query representations {query} with {variable_values}")
             resp = await clientExecutor(query, {**variable_values})
@@ -182,7 +178,6 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
             testResult(resp)
 
         append(queryname=f"{gqltype}_representation", query=query)
-        
 
     return result_test
 
@@ -204,7 +199,7 @@ def createFrontendQuery(query="{}", variables={}, asserts=[]):
             context_value=context_value
         )
 
-        assert resp.errors is None
+        assert resp.errors is None, resp.errors[0]
         respdata = resp.data
         logging.debug(f"response: {respdata}")
         for a in asserts:
@@ -231,7 +226,7 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
         async with async_session_maker() as session:
             rows = await session.execute(statement)
             row = rows.first()
-    
+            
             print("row", row)
             id = row[0]
             lastchange = row[1]

@@ -25,9 +25,9 @@ from gql_externalids.GraphResolvers import (
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
 GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".externals")]
-ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
-PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
-FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
+# ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
+# PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
+# FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
 
 ExternalIdCategoryGQLModel = Annotated["ExternalIdCategoryGQLModel", strawberry.lazy(".externalIdCategoryGQLModel")]
 

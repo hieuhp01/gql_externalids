@@ -432,3 +432,16 @@ def createLoadersContext(asyncSessionMaker):
     return {
         "loaders": createLoaders_3(asyncSessionMaker)
     }
+
+def createUgConnectionContext(request):
+    from .gql_ug_proxy import get_ug_connection
+    connection = get_ug_connection(request=request)
+    return {
+        "ug_connection": connection
+    }
+
+def getUgConnection(info):
+    context = info.context
+    print("getUgConnection.context", context)
+    connection = context.get("ug_connection", None)
+    return connection

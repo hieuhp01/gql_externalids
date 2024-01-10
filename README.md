@@ -13,7 +13,7 @@ Start the app without the docker
 - change the ComposeConnectionString inner constants in DBDefinition.py to your postgres address (see used pattern)
 - to start the app outside of docker use the following command:
 uvicorn main:app --reload
-- after application startup you can access the graphQL UI on ip given by uvicorn - remember to add /gql (example: http://127.0.0.1:8000/gql)
+- after application startup you can access the graphQL UI on ip given by uvicorn - remember to add /gql (example: http://localhost:8000/gql)
 - by default the app creates some random database after every startup (not all tables are populated with data)
 <br/><br/>
 

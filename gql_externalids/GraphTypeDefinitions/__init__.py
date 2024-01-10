@@ -9,11 +9,17 @@ import strawberry
 #
 ###########################################################################################################################
 
-from .externals import UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel
+from .externals import (
+    UserGQLModel, 
+    GroupGQLModel, 
+    # ProjectGQLModel, 
+    # PublicationGQLModel, 
+    # FacilityGQLModel
+)
 from .query import Query
 from .mutation import Mutation
 
 schema = strawberry.federation.Schema(
-    query=Query, mutation=Mutation, types=(UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel)
+    query=Query, mutation=Mutation, types=(UserGQLModel, GroupGQLModel)# ProjectGQLModel, PublicationGQLModel, FacilityGQLModel)
     
 )
