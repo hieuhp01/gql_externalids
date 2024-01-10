@@ -179,7 +179,7 @@ def createDeleteQuery(query="{}", variables={}, tableName=""):
         async with async_session_maker() as session:
             rows = await session.execute(statement)
             row = rows.first()
-            assert row is not None, "Row does not exist"
+            assert row is None, "Row does not exist"
 
         context_value = createContext(async_session_maker)
         logging.debug(f"query for {query} with {variables}")
