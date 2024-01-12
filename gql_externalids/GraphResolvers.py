@@ -1,21 +1,3 @@
-from ast import Call
-from typing import Coroutine, Callable, Awaitable, Union, List
-import uuid
-from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload, joinedload
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from uoishelpers.resolvers import (
-    create1NGetter,
-    createEntityByIdGetter,
-    createEntityGetter,
-    createInsertResolver,
-    createUpdateResolver,
-)
-from uoishelpers.resolvers import putSingleEntityToDb
-
-from gql_externalids.DBDefinitions import BaseModel
-
 ###########################################################################################################################
 #
 # zde si naimportujte sve SQLAlchemy modely
@@ -55,7 +37,7 @@ def resolve_created(self) -> typing.Optional[datetime.datetime]:
 
 async def resolve_user(user_id):
     from gql_externalids.GraphTypeDefinitions.externals import UserGQLModel
-    result = None if user_id is None else await UserGQLModel.resolve_reference(user_id)
+    result = None if user_id is None else await UserGQLModel.resolve_reference(user_id, id)
     return result
     
 @strawberry.field(description="""Who created entity""")

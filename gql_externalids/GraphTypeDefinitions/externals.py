@@ -29,15 +29,18 @@ async def resolve_external_ids(self, info: strawberry.types.Info) -> List[Extern
     result = await loader.filter_by(inner_id=self.id)
     return result
 
+@classmethod
+async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+    return cls(id=id)
+
+class BaseEternal:
+    id: UUID = strawberry.federation.field(external=True)
 
 @strawberry.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
 
     id: UUID = strawberry.federation.field(external=True)
-
-    @classmethod
-    async def resolve_reference(cls, id: UUID):
-       return None if id is None else UserGQLModel(id=id)
+    resolve_reference = resolve_reference
 
     
     # @strawberry.field(description="""All external ids related to the user""")
@@ -51,10 +54,7 @@ class UserGQLModel:
 class GroupGQLModel:
 
     id: UUID = strawberry.federation.field(external=True)
-
-    @classmethod
-    async def resolve_reference(cls, id: UUID):
-        return None if id is None else GroupGQLModel(id=id)
+    resolve_reference = resolve_reference
 
     # @strawberry.field(description="""All external ids related to the group""")
     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:

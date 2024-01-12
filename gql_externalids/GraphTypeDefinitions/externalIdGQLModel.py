@@ -48,7 +48,7 @@ class ExternalIdGQLModel(BaseGQLModel):
     """
     @classmethod
     def getLoader(cls, info):
-        return getLoadersFromInfo(info).externaltypeids
+        return getLoadersFromInfo(info).externalids
     
     # @classmethod
     # async def resolve_reference(cls, info: strawberry.types.Info, id: uuid.UUID):

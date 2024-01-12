@@ -55,3 +55,10 @@ Kompletní CRUD dotazy na GQL v souboru externalids_queries.json (dictionary), j
 Kompletní popisy API v kódu (description u GQLModelů) a popisy DB vrstvy (comment u DBModelů).
 Zabezpečte více jak 90% code test coverage (standard pytest).
 <br/><br/>
+
+# Execution:
+<br/><br/>
+uvicorn main:app --env-file environment.txt --port 8000 --reload
+pytest --cov-report term-missing --cov=DBDefinitions --cov=GraphTypeDefinitions --cov=utils --log-cli-level=INFO -x
+python -m pydoc GraphTypeDefinitions
+<br/><br/>
