@@ -2,6 +2,7 @@ import strawberry
 import datetime
 import typing
 from typing import Union, Optional, List, Annotated
+from gql_externalids.GraphPermissions import OnlyForAuthentized, RoleBasedPermission
 import gql_externalids.GraphTypeDefinitions
 from uuid import UUID
 
@@ -63,20 +64,20 @@ class ExternalIdGQLModel(BaseGQLModel):
     name_en = resolve_name_en
 
 
-    @strawberry.field(description="""Inner id""")
+    @strawberry.field(description="""Inner id""",permission_classes=[OnlyForAuthentized()])
     def inner_id(self) -> UUID:
         return self.inner_id
 
-    @strawberry.field(description="""Outer id""")
+    @strawberry.field(description="""Outer id""",permission_classes=[OnlyForAuthentized()])
     def outer_id(self) -> str:
         return self.outer_id
 
-    @strawberry.field(description="""Type of id""")
+    @strawberry.field(description="""Type of id""",permission_classes=[OnlyForAuthentized()])
     async def id_type(self, info: strawberry.types.Info) -> "ExternalIdTypeGQLModel":
         result = await ExternalIdTypeGQLModel.resolve_reference(info=info, id=self.typeid_id)
         return result
 
-    @strawberry.field(description="""Type name of id""")
+    @strawberry.field(description="""Type name of id""",permission_classes=[OnlyForAuthentized()])
     async def type_name(self, info: strawberry.types.Info) -> Union[str, None]:
         result = await ExternalIdTypeGQLModel.resolve_reference(info=info, id=self.typeid_id)
         return result.name if result else None
@@ -87,7 +88,7 @@ class ExternalIdGQLModel(BaseGQLModel):
 #
 #####################################################################
 @strawberry.field(
-    description="""Returns inner id based on external id type and external id value"""
+    description="""Returns inner id based on external id type and external id value""",permission_classes=[OnlyForAuthentized()]
     )
 async def internal_id(
     self,
@@ -101,7 +102,7 @@ async def internal_id(
     return None if row is None else row.inner_id
 
 @strawberry.field(
-    description="""Returns outer ids based on external id type and inner id value"""
+    description="""Returns outer ids based on external id type and inner id value""",permission_classes=[OnlyForAuthentized()]
     )
 async def external_ids(
     self,
@@ -154,7 +155,7 @@ class ExternalIdResultGQLModel:
         return result
 
 
-@strawberry.mutation(description="defines a new external id for an entity")
+@strawberry.mutation(description="defines a new external id for an entity",permission_classes=[OnlyForAuthentized()])
 async def externalid_insert(self, info: strawberry.types.Info, externalid: ExternalIdInsertGQLModel) -> ExternalIdResultGQLModel:
     actingUser = getUserFromInfo(info)
     loader = getLoadersFromInfo(info).externalids
@@ -171,7 +172,7 @@ async def externalid_insert(self, info: strawberry.types.Info, externalid: Exter
         result = {"id": row.id, "msg": "fail"}
     return result
 
-@strawberry.mutation(description="Remove an external ID")
+@strawberry.mutation(description="Remove an external ID",permission_classes=[OnlyForAuthentized()])
 async def externalid_delete(self, info: strawberry.types.Info, externalid: ExternalIdDeleteGQLModel) -> ExternalIdResultGQLModel:
     loader = getLoadersFromInfo(info).externalids
     result = ExternalIdResultGQLModel()
@@ -184,7 +185,7 @@ async def externalid_delete(self, info: strawberry.types.Info, externalid: Exter
         result = {"id": row.id, "msg": "fail"}
     return result
 
-@strawberry.mutation(description="Updates an external ID with a new external ID")
+@strawberry.mutation(description="Updates an external ID with a new external ID",permission_classes=[OnlyForAuthentized()])
 async def externalid_update(self, info: strawberry.types.Info, externalid: ExternalIdUpdateGQLModel) -> ExternalIdResultGQLModel:
     loader = getLoadersFromInfo(info).externalids
     result = ExternalIdResultGQLModel()

@@ -2,6 +2,7 @@ import strawberry
 import datetime
 import typing
 from typing import Optional, List, Union, Annotated, Type
+from gql_externalids.GraphPermissions import OnlyForAuthentized, RoleBasedPermission
 import gql_externalids.GraphTypeDefinitions
 from uuid import UUID
 
@@ -108,20 +109,24 @@ class ExternalIdCategoryResultGQLModel:
         result = await ExternalIdCategoryGQLModel.resolve_reference(info, self.id)
         return result
     
-@strawberry.mutation(description="defines a new external id category for an entity")
+@strawberry.mutation(
+    description="defines a new external id category for an entity",
+    permission_classes=[OnlyForAuthentized()])
 async def externalidcategory_insert(self, info: strawberry.types.Info, externalidcategory: ExternalIdCategoryInsertGQLModel) -> ExternalIdCategoryResultGQLModel:
     actingUser = getUserFromInfo(info)
     loader = getLoadersFromInfo(info).externalcategoryids
     externalidcategory.createdby = UUID(actingUser["id"])
     
     row = await loader.insert(externalidcategory)
-    result = ExternalIdCategoryResultGQLModel(id=row.id,msg="ok")
+    result = ExternalIdCategoryResultGQLModel(id=row.id,msg="ok") 
     result.id = row.id
     result.msg = "ok"
 
     return result
 
-@strawberry.mutation(description="Update existing external id category for an entity")
+@strawberry.mutation(
+    description="Update existing external id category for an entity",
+    permission_classes=[OnlyForAuthentized()])
 async def externalidcategory_update(self, info: strawberry.types.Info, externalidcategory: ExternalIdCategoryUpdateGQLModel) -> ExternalIdCategoryResultGQLModel:
     actingUser = getUserFromInfo(info)
     loader = getLoadersFromInfo(info).externalcategoryids

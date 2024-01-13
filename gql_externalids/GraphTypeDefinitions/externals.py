@@ -1,6 +1,7 @@
 import strawberry
 from typing import List
 from uuid import UUID
+import uuid
 
 from .externalIdGQLModel import ExternalIdGQLModel
 
@@ -61,6 +62,20 @@ class GroupGQLModel:
     #     return await resolve_external_ids(self, info)
     
     external_ids = resolve_external_ids
+    
+    
+from gql_externalids.utils.Dataloaders import getLoadersFromInfo
+
+@strawberry.federation.type(extend=True, keys=["id"])
+class RBACObjectGQLModel:
+    id: uuid.UUID = strawberry.federation.field(external=True)
+    resolve_reference = resolve_reference
+
+    @classmethod
+    async def resolve_roles(cls, info: strawberry.types.Info, id: uuid.UUID):
+        loader = getLoadersFromInfo(info).authorizations
+        authorizedroles = await loader.load(id)
+        return authorizedroles
     
 # @strawberry.federation.type(extend=True, keys=["id"])
 # class ProjectGQLModel:

@@ -2,6 +2,7 @@ import strawberry
 import datetime
 import typing
 from typing import Optional, Union, List, Annotated
+from gql_externalids.GraphPermissions import OnlyForAuthentized, RoleBasedPermission
 import gql_externalids.GraphTypeDefinitions
 from uuid import UUID
 
@@ -55,7 +56,7 @@ class ExternalIdTypeGQLModel(BaseGQLModel):
     name_en = resolve_name_en
 
 
-    @strawberry.field(description="""Category which belongs to""")
+    @strawberry.field(description="""Category which belongs to""",permission_classes=[OnlyForAuthentized()])
     async def category(self, info: strawberry.types.Info) -> typing.Optional["ExternalIdCategoryGQLModel"]:
         from .externalIdCategoryGQLModel import ExternalIdCategoryGQLModel
         result = await ExternalIdCategoryGQLModel.resolve_reference(info, self.category_id)
@@ -86,7 +87,7 @@ externalid_type_page = createRootResolver_by_page(
     loaderLambda=lambda info: getLoadersFromInfo(info).externaltypeids
 )
 
-@strawberry.field(description="""Rows of externaltypeids""")
+@strawberry.field(description="""Rows of externaltypeids""",permission_classes=[OnlyForAuthentized()])
 async def externalidtype_by_id(self, info: strawberry.types.Info, id: UUID) -> Optional[ExternalIdTypeGQLModel]:
     result = await ExternalIdTypeGQLModel.resolve_reference(info, id)
     return result
@@ -127,7 +128,7 @@ class ExternalIdTypeResultGQLModel:
         result = await ExternalIdTypeGQLModel.resolve_reference(info, self.id)
         return result
     
-@strawberry.mutation(description="defines a new external type id for an entity")
+@strawberry.mutation(description="defines a new external type id for an entity",permission_classes=[OnlyForAuthentized()])
 async def externaltypeid_insert(self, info: strawberry.types.Info, externaltypeid: ExternalIdTypeInsertGQLModel) -> ExternalIdTypeResultGQLModel:
     actingUser = getUserFromInfo(info)
     loader = getLoadersFromInfo(info).externaltypeids
@@ -140,7 +141,7 @@ async def externaltypeid_insert(self, info: strawberry.types.Info, externaltypei
 
     return result
 
-@strawberry.mutation(description="Update existing external type id for an entity")
+@strawberry.mutation(description="Update existing external type id for an entity",permission_classes=[OnlyForAuthentized()])
 async def externaltypeid_update(self, info: strawberry.types.Info, externaltypeid: ExternalIdTypeUpdateGQLModel) -> ExternalIdTypeResultGQLModel:
     actingUser = getUserFromInfo(info)
     loader = getLoadersFromInfo(info).externaltypeids

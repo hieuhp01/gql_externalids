@@ -25,6 +25,6 @@ class ExternalIdModel(BaseModel):
     changedby = UUIDFKey(nullable=True, comment="who has changed this entity")#Column(ForeignKey("users.id"), index=True, nullable=True)
     createdby = UUIDFKey(nullable=True, comment="who has created this entity")#Column(ForeignKey("users.id"), index=True, nullable=True)
     
-    
+    rbacobject = UUIDFKey(nullable=True, comment="user or group id, determines access")
     
     
