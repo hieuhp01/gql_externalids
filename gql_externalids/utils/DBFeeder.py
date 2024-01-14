@@ -51,7 +51,7 @@ async def initDB(asyncSessionMaker):
         dbModels = [
             ExternalIdCategoryModel,
             ExternalIdTypeModel,
-            
+            ExternalIdModel
         ]
     else:
         dbModels = [

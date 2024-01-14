@@ -36,10 +36,11 @@ docker-compose up
 <br/><br/>
 
 pytest --cov-report term-missing --cov=gql_externalids tests
-
+pytest --cov-report term-missing --cov=DBDefinitions --cov=GraphTypeDefinitions --cov=utils --log-cli-level=INFO -x
 Linux demo run:
 DEMO=true uvicorn main:app --reload
 pip install -r requirements.txt --force
+pip install -r requirements-dev.txt --force
 
 # Requirements:
 <br/><br/>

@@ -10,6 +10,7 @@ from uuid import uuid1 as uuid
 import random
 import pytest_asyncio
 
+
 def uuid1():
     return f"{uuid()}"
 
@@ -28,8 +29,8 @@ def DBModels():
     ##
     return  [
         ExternalIdCategoryModel,
-        ExternalIdModel,
-        ExternalIdTypeModel
+        ExternalIdTypeModel,
+        ExternalIdModel
         ]
 
 from gql_externalids.utils.DBFeeder import get_demodata
