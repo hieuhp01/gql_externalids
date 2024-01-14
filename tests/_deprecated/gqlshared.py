@@ -138,6 +138,7 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
             assert len(respdata) == 1
             respdata = respdata[0]
 
+            assert respdata is not None, "respdata is None"
             assert respdata['id'] == rowid
 
         schemaExecutor = CreateSchemaFunction()

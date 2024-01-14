@@ -1,7 +1,7 @@
 import pytest
 from gql_externalids.GraphTypeDefinitions import schema
 
-from tests.gqlshared import (
+from tests._deprecated.gqlshared import (
     createByIdTest, 
     createPageTest, 
     createResolveReferenceTest, 

@@ -3,7 +3,7 @@ from sqlalchemy import select
 import pytest
 import logging
 
-from tests.shared import (
+from tests._deprecated.shared import (
     prepare_demodata,
     prepare_in_memory_sqllite,
     get_demodata,

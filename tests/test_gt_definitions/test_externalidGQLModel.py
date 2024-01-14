@@ -4,16 +4,16 @@ import logging
 import sqlalchemy
 import uuid
 
-from tests.shared import (
+from tests._deprecated.shared import (
     prepare_demodata,
     prepare_in_memory_sqllite,
     get_demodata,
     createContext,
     CreateSchemaFunction
 )
-from tests.client import CreateClientFunction
+from tests._deprecated.client import CreateClientFunction
 
-from tests.gqlshared import (
+from tests._deprecated.gqlshared import (
     append, 
     createResolveReferenceTest, 
     createFrontendQuery, 
@@ -42,7 +42,7 @@ def createInternalIDTest(tableName, queryEndpoint, attributeNames=["id", "name"]
         data = get_demodata()
         datarow = data[tableName][0]
         content = "{" + ", ".join(attributeNames) + "}"
-        query = f"query($typeidId: UUID!, $outerId: String!){{ {queryEndpoint}(typeidId: $typeidId, outerId: $outerId) }}"
+        query = f"query($typeidId: UUID!, $outerId: String!){{ {queryEndpoint}(typeidId: $typeidId, outerId: $outerId) {content}  }}"
 
         variable_values = {"typeidId": f'{datarow["typeid_id"]}', "outerId": f'{datarow["outer_id"]}'}
         
