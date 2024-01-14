@@ -35,8 +35,7 @@ docker-compose up
 - in this version of our project the database is populated with random data (not all databse is populated - for testing purposes only)
 <br/><br/>
 
-pytest --cov-report term-missing --cov=gql_externalids tests
-pytest --cov-report term-missing --cov=DBDefinitions --cov=GraphTypeDefinitions --cov=utils --log-cli-level=INFO -x
+pytest --cov-report term-missing --cov=gql_externalids tests -x
 Linux demo run:
 DEMO=true uvicorn main:app --reload
 pip install -r requirements.txt --force

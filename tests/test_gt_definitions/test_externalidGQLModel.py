@@ -211,8 +211,21 @@ test_reference_externalid = createResolveReferenceTest(tableName="externalids", 
 
 #     return test_delete
 
-# test_query_internalid_byexternalid = createInternalIDTest(tableName="externalids", queryEndpoint="internalId")
-# test_query_externalid_byinternalid = createExternalIDTest(tableName="externalids", queryEndpoint="externalIds")
+test_query_internalid = createFrontendQuery(
+    query="""query($outer_id: String!, $typeid_id: UUID!) {
+        internalId(outerId: $outer_id, typeidId: $typeid_id)
+    }""",
+    variables={"outer_id": "666", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717"},
+)
+
+test_query_externalid = createFrontendQuery(
+    query="""query($inner_id: UUID!, $typeid_id: UUID!) {
+        externalIds(innerId: $inner_id, typeidId: $typeid_id) {
+            id
+        }
+    }""",
+    variables={"inner_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717"},
+)
 
 test_externalid_insert = createFrontendQuery(query="""
     mutation($inner_id: UUID!, $typeid_id: UUID!, $outer_id: String!) { 
@@ -255,15 +268,14 @@ test_externalid_insert = createFrontendQuery(query="""
 #     tableName="externalids"
 # )
 
-# test_externalid_delete = createDeleteQuery(
-#     query="""
-#         mutation($inner_id: UUID!, $typeid_id: UUID!, $outer_id: String!) {
-#             externalidDelete(externalid: {innerId: $inner_id, typeidId: $typeid_id, outerId: $outer_id}) {
-#                 id
-#                 msg
-#             }
-#         }
-#     """,
-#     variables={"inner_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717", "outer_id": "666"},
-#     tableName="externalids"
-# )
+test_externalid_delete = createFrontendQuery(
+    query="""
+        mutation($inner_id: UUID!, $typeid_id: UUID!, $outer_id: String!) {
+            externalidDelete(externalid: {innerId: $inner_id, typeidId: $typeid_id, outerId: $outer_id}) {
+                id
+                msg
+            }
+        }
+    """,
+    variables={"inner_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717", "outer_id": "666"}
+)
