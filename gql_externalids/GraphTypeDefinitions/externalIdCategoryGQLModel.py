@@ -17,10 +17,9 @@ from gql_externalids.GraphResolvers import (
     resolve_created,
     resolve_createdby,
     resolve_changedby,
+    resolve_rbacobject,
     createRootResolver_by_id,
     createRootResolver_by_page,
-    createAttributeScalarResolver,
-    createAttributeVectorResolver
 ) 
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
@@ -51,6 +50,7 @@ class ExternalIdCategoryGQLModel(BaseGQLModel):
     created = resolve_created
     createdby = resolve_createdby
     name_en = resolve_name_en
+    rbacobject = resolve_rbacobject
 
 #####################################################################
 #

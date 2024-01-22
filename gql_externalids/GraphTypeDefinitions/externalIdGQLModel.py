@@ -17,10 +17,9 @@ from gql_externalids.GraphResolvers import (
     resolve_created,
     resolve_createdby,
     resolve_changedby,
+    resolve_rbacobject,
     createRootResolver_by_id,
     createRootResolver_by_page,
-    createAttributeScalarResolver,
-    createAttributeVectorResolver
 ) 
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
@@ -62,6 +61,7 @@ class ExternalIdGQLModel(BaseGQLModel):
     created = resolve_created
     createdby = resolve_createdby
     name_en = resolve_name_en
+    rbacobject = resolve_rbacobject
 
 
     @strawberry.field(description="""Inner id""",permission_classes=[OnlyForAuthentized()])
@@ -168,8 +168,8 @@ async def externalid_insert(self, info: strawberry.types.Info, externalid: Exter
         row = await loader.insert(externalid)
         result.id = row.id
         result.msg = "ok"
-    else:
-        result = {"id": row.id, "msg": "fail"}
+    # else:
+    #     result = {"id": row.id, "msg": "fail"}
     return result
 
 @strawberry.mutation(description="Remove an external ID",permission_classes=[OnlyForAuthentized()])
@@ -181,8 +181,8 @@ async def externalid_delete(self, info: strawberry.types.Info, externalid: Exter
     if row is not None:
         row = await loader.delete(row.id)
         result.msg = "ok"
-    else:
-        result = {"id": row.id, "msg": "fail"}
+    # else:
+    #     result = {"id": row.id, "msg": "fail"}
     return result
 
 @strawberry.mutation(description="Updates an external ID with a new external ID",permission_classes=[OnlyForAuthentized()])

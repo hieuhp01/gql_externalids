@@ -17,10 +17,9 @@ from gql_externalids.GraphResolvers import (
     resolve_created,
     resolve_createdby,
     resolve_changedby,
+    resolve_rbacobject,
     createRootResolver_by_id,
     createRootResolver_by_page,
-    createAttributeScalarResolver,
-    createAttributeVectorResolver
 ) 
 
 
@@ -54,6 +53,7 @@ class ExternalIdTypeGQLModel(BaseGQLModel):
     created = resolve_created
     createdby = resolve_createdby
     name_en = resolve_name_en
+    rbacobject = resolve_rbacobject
 
 
     @strawberry.field(description="""Category which belongs to""",permission_classes=[OnlyForAuthentized()])
@@ -87,10 +87,15 @@ externalid_type_page = createRootResolver_by_page(
     loaderLambda=lambda info: getLoadersFromInfo(info).externaltypeids
 )
 
-@strawberry.field(description="""Rows of externaltypeids""",permission_classes=[OnlyForAuthentized()])
-async def externalidtype_by_id(self, info: strawberry.types.Info, id: UUID) -> Optional[ExternalIdTypeGQLModel]:
-    result = await ExternalIdTypeGQLModel.resolve_reference(info, id)
-    return result
+externalidtype_by_id = createRootResolver_by_id(
+    ExternalIdTypeGQLModel, 
+    description="Retrieves the form category")
+
+
+# @strawberry.field(description="""Rows of externaltypeids""",permission_classes=[OnlyForAuthentized()])
+# async def externalidtype_by_id(self, info: strawberry.types.Info, id: UUID) -> Optional[ExternalIdTypeGQLModel]:
+#     result = await ExternalIdTypeGQLModel.resolve_reference(info, id)
+#     return result
 
 #####################################################################
 #
