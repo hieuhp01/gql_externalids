@@ -18,7 +18,6 @@ from tests._deprecated.client import CreateClientFunction
 from .gt_utils import ( 
     createResolveReferenceTest, 
     createFrontendQuery, 
-    createUpdateQuery
 )
 
 # test_reference_externalid = createResolveReferenceTest(tableName="externalids", gqltype="ExternalIdGQLModel", attributeNames=["id", "name", "lastchange", "nameEn", "innerId","outerId","idType {id}","typeName"])
@@ -99,7 +98,7 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
     async def test_update():
         logging.debug("test_update")
         assert variables.get("inner_id", None) is not None, "variables has not id"
-        variables["inner_id"] = uuid.UUID(f"{variables['inner_id']}")
+        # variables["inner_id"] = uuid.UUID(f"{variables['inner_id']}")
         assert "$lastchange: DateTime!" in query, "query must have parameter $lastchange: DateTime!"
         assert "lastchange: $lastchange" in query, "query must use lastchange: $lastchange"
         assert tableName != "", "missing table name"
@@ -108,9 +107,9 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
         await prepare_demodata(async_session_maker)
 
         print("variables['inner_id']", variables, flush=True)
-        statement = sqlalchemy.text(f"SELECT inner_id, lastchange FROM {tableName} WHERE inner_id=:inner_id").bindparams(inner_id=variables['inner_id'])
+        statement = sqlalchemy.text(f"SELECT inner_id, lastchange FROM {tableName} WHERE inner_id=:inner_id and typeid_id=:typeid_id").bindparams(inner_id=variables['inner_id'],typeid_id=variables['typeid_id'])
         #statement = sqlalchemy.text(f"SELECT id, lastchange FROM {tableName}")
-        print("statement", statement, flush=True)
+        #print("statement", statement, flush=True)
         async with async_session_maker() as session:
             rows = await session.execute(statement)
             row = rows.first()
@@ -122,7 +121,7 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
             print(id, lastchange)
 
         variables["lastchange"] = lastchange
-        variables["inner_id"] = f'{variables["inner_id"]}'
+        # variables["inner_id"] = f'{variables["inner_id"]}'
         context_value = createContext(async_session_maker)
         logging.debug(f"query for {query} with {variables}")
         print(f"query for {query} with {variables}")
@@ -266,7 +265,7 @@ test_externalid_update = createUpdateQuery(
             }
         }
     """,
-    variables={"inner_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717", "outer_id": "888" },
+    variables={"inner_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717", "outer_id": "666" },
     tableName="externalids"
 )
 
