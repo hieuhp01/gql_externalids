@@ -16,13 +16,6 @@ from .ExternalIdModel import ExternalIdModel
 ###########################################################################################################################
 
 
-
-
-
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 

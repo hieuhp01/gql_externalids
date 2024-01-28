@@ -133,7 +133,7 @@ class ExternalIdInsertGQLModel:
 class ExternalIdUpdateGQLModel:
     inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
     typeid_id: UUID = strawberry.field(default=None, description="Type of external id")
-    outer_id: str = strawberry.field(default=None, description="Key used by other systems")
+    outer_id: Optional[str] = strawberry.field(default=None, description="Key used by other systems")
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
     
 @strawberry.input()
@@ -195,14 +195,15 @@ async def externalid_update(self, info: strawberry.types.Info, externalid: Exter
     row = next(rows, None)
 
     if row is not None:
+        
         row.outer_id = externalid.outer_id
         
         await loader.update(row)
 
         result.msg = "ok"
         result.id = row.id
-    else:
-        result.id = None
-        result.msg = "fail"
+    # else:
+    #     result.id = None
+    #     result.msg = "fail"
 
     return result

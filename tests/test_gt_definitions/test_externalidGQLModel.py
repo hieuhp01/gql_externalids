@@ -98,7 +98,8 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
     async def test_update():
         logging.debug("test_update")
         assert variables.get("inner_id", None) is not None, "variables has not id"
-        # variables["inner_id"] = uuid.UUID(f"{variables['inner_id']}")
+        variables["inner_id"] = uuid.UUID(f"{variables['inner_id']}")
+        variables["typeid_id"] = uuid.UUID(f"{variables['typeid_id']}")
         assert "$lastchange: DateTime!" in query, "query must have parameter $lastchange: DateTime!"
         assert "lastchange: $lastchange" in query, "query must use lastchange: $lastchange"
         assert tableName != "", "missing table name"
@@ -107,21 +108,23 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
         await prepare_demodata(async_session_maker)
 
         print("variables['inner_id']", variables, flush=True)
-        statement = sqlalchemy.text(f"SELECT inner_id, lastchange FROM {tableName} WHERE inner_id=:inner_id and typeid_id=:typeid_id").bindparams(inner_id=variables['inner_id'],typeid_id=variables['typeid_id'])
+        statement = sqlalchemy.text(f"SELECT inner_id, lastchange, typeid_id FROM {tableName} WHERE (inner_id=:inner_id) AND (typeid_id=:typeid_id) ").bindparams(inner_id=variables['inner_id'], typeid_id=variables['typeid_id'])
         #statement = sqlalchemy.text(f"SELECT id, lastchange FROM {tableName}")
-        #print("statement", statement, flush=True)
+        print("statement", statement, flush=True)
         async with async_session_maker() as session:
             rows = await session.execute(statement)
             row = rows.first()
     
             print("row", row)
-            id = row[0]
+            inner_id = row[0]
             lastchange = row[1]
+            typeid_id = row[2]
 
-            print(id, lastchange)
+            print(inner_id, lastchange, typeid_id)
 
         variables["lastchange"] = lastchange
-        # variables["inner_id"] = f'{variables["inner_id"]}'
+        variables["inner_id"] = f'{variables["inner_id"]}'
+        variables["typeid_id"] = f'{variables["typeid_id"]}'
         context_value = createContext(async_session_maker)
         logging.debug(f"query for {query} with {variables}")
         print(f"query for {query} with {variables}")
@@ -152,7 +155,7 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
 
         if entity is not None:
             for key, value in entity.items():
-                if key in ["inner_id", "lastchange"]:
+                if key in ["id", "inner_id", "outerId", "lastchange","idType"]:
                     continue
                 print("attribute check", type(key), f"[{key}] is {value} ?= {variables[key]}")
                 assert value == variables[key], f"test on update failed {value} != {variables[key]}"
@@ -163,54 +166,6 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
         
 
     return test_update
-
-# def createDeleteQuery(query="{}", variables={}, tableName=""):
-#     @pytest.mark.asyncio
-#     async def test_delete():
-#         logging.debug("test_delete")
-#         assert variables.get("inner_id", None) is not None, "variables has not id"
-#         variables["inner_id"] = str(uuid.UUID(f"{variables['inner_id']}"))
-
-#         async_session_maker = await prepare_in_memory_sqllite()
-#         await prepare_demodata(async_session_maker)
-        
-#         print(f"inner_id: {variables['inner_id']}")
-#         print(f"tableName: {tableName}")
-
-#         statement = sqlalchemy.text(f"SELECT inner_id FROM {tableName} WHERE inner_id=:inner_id").bindparams(inner_id=variables['inner_id'])
-#         async with async_session_maker() as session:
-#             rows = await session.execute(statement)
-#             row = rows.first()
-#             assert row is None, "Row does not exist"
-
-#         context_value = createContext(async_session_maker)
-#         logging.debug(f"query for {query} with {variables}")
-
-#         append(queryname=f"query_{tableName}", mutation=query, variables=variables)
-
-#         resp = await schema.execute(
-#             query=query, 
-#             variable_values=variables, 
-#             context_value=context_value
-#         )
-
-#         assert resp.errors is None
-#         respdata = resp.data
-#         assert respdata is not None
-#         keys = list(respdata.keys())
-#         assert len(keys) == 1, "expected delete test has one result"
-#         key = keys[0]
-#         result = respdata.get(key, None)
-#         assert result is not None, f"{key} is None (test delete) with {query}"
-#         assert result['msg'] == 'ok', "Delete operation failed"
-
-#         # Check if the row has been deleted
-#         async with async_session_maker() as session:
-#             rows = await session.execute(statement)
-#             row = rows.first()
-#             assert row is None, "Row still exists after delete"
-
-#     return test_delete
 
 test_query_internalid = createFrontendQuery(
     query="""query($outer_id: String!, $typeid_id: UUID!) {
@@ -265,7 +220,7 @@ test_externalid_update = createUpdateQuery(
             }
         }
     """,
-    variables={"inner_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717", "outer_id": "666" },
+    variables={"inner_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717", "outer_id": "888" },
     tableName="externalids"
 )
 

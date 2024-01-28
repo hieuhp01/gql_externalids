@@ -187,57 +187,57 @@ class AuthorizationLoader(DataLoader):
 # }
 
 
-    roleUrlEndpoint=composeAuthUrl()
-    def __init__(self,
-        roleUrlEndpoint=roleUrlEndpoint,
-        query=query,
-        demo=True):
-        super().__init__(cache=True)
-        self.roleUrlEndpoint = roleUrlEndpoint
-        self.query = query
-        self.demo = demo
+    # roleUrlEndpoint=composeAuthUrl()
+    # def __init__(self,
+    #     roleUrlEndpoint=roleUrlEndpoint,
+    #     query=query,
+    #     demo=True):
+    #     super().__init__(cache=True)
+    #     self.roleUrlEndpoint = roleUrlEndpoint
+    #     self.query = query
+    #     self.demo = demo
 
 
-    async def _load(self, id):
-        variables = {"id": f"{id}"}
-        headers = {}
-        json = {
-            "query": self.query,
-            "variables": variables
-        }
-        roleUrlEndpoint=self.roleUrlEndpoint
-        async with aiohttp.ClientSession() as session:
-            print(f"query {roleUrlEndpoint} for json={json}")
-            async with session.post(url=roleUrlEndpoint, json=json, headers=headers) as resp:
-                print(resp.status)
-                if resp.status != 200:
-                    text = await resp.text()
-                    print(text)
-                    return []
-                else:
-                    respJson = await resp.json()
+    # async def _load(self, id):
+    #     variables = {"id": f"{id}"}
+    #     headers = {}
+    #     json = {
+    #         "query": self.query,
+    #         "variables": variables
+    #     }
+    #     roleUrlEndpoint=self.roleUrlEndpoint
+    #     async with aiohttp.ClientSession() as session:
+    #         print(f"query {roleUrlEndpoint} for json={json}")
+    #         async with session.post(url=roleUrlEndpoint, json=json, headers=headers) as resp:
+    #             print(resp.status)
+    #             if resp.status != 200:
+    #                 text = await resp.text()
+    #                 print(text)
+    #                 return []
+    #             else:
+    #                 respJson = await resp.json()
 
-        print(respJson)
+    #     print(respJson)
         
-        assert respJson.get("errors", None) is None
-        respdata = respJson.get("data", None)
-        assert respdata is not None
-        rolesOnUser = respdata.get("rolesOnUser", None)
-        rolesOnGroup = respdata.get("rolesOnGroup", None)
-        assert rolesOnUser is not None
-        assert rolesOnGroup is not None
+    #     assert respJson.get("errors", None) is None
+    #     respdata = respJson.get("data", None)
+    #     assert respdata is not None
+    #     rolesOnUser = respdata.get("rolesOnUser", None)
+    #     rolesOnGroup = respdata.get("rolesOnGroup", None)
+    #     assert rolesOnUser is not None
+    #     assert rolesOnGroup is not None
         
-        return [*rolesOnUser, *rolesOnGroup]
+    #     return [*rolesOnUser, *rolesOnGroup]
 
 
-    async def batch_load_fn(self, keys):
-        #print('batch_load_fn', keys, flush=True)
-        reducedkeys = set(keys)
-        awaitables = (self._load(key) for key in reducedkeys)
-        results = await asyncio.gather(*awaitables)
-        indexedResult = {key:result for key, result in zip(reducedkeys, results)}
-        results = [indexedResult[key] for key in keys]
-        return results
+    # async def batch_load_fn(self, keys):
+    #     #print('batch_load_fn', keys, flush=True)
+    #     reducedkeys = set(keys)
+    #     awaitables = (self._load(key) for key in reducedkeys)
+    #     results = await asyncio.gather(*awaitables)
+    #     indexedResult = {key:result for key, result in zip(reducedkeys, results)}
+    #     results = [indexedResult[key] for key in keys]
+    #     return results
     
 # def createIdLoader(asyncSessionMaker, dbModel) :
 
