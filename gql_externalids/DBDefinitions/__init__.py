@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from .Base import BaseModel
+from .UUID import UUIDColumn
 from .ExternalIdCategoryModel import ExternalIdCategoryModel
 from .ExternalIdTypeModel import ExternalIdTypeModel
 from .ExternalIdModel import ExternalIdModel
@@ -29,13 +30,8 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
             await conn.run_sync(BaseModel.metadata.drop_all)
             print("BaseModel.metadata.drop_all finished")
         if makeUp:
-            try:
-                await conn.run_sync(BaseModel.metadata.create_all)
-                print("BaseModel.metadata.create_all finished")
-            except sqlalchemy.exc.NoReferencedTableError as e:
-                print(e)
-                print("Unable automaticaly create tables")
-                return None
+            try: await conn.run_sync(BaseModel.metadata.create_all); print("BaseModel.metadata.create_all finished")
+            except sqlalchemy.exc.NoReferencedTableError as e: print(e, "\nUnable to automatically create tables")
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession

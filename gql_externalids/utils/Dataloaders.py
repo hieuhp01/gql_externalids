@@ -165,8 +165,6 @@ class AuthorizationLoader(DataLoader):
             group { id }
         }
     """
-
-
 # {
 #   rbacById(id: "2d9dc5ca-a4a2-11ed-b9df-0242ac120003") {
 #     id
@@ -354,8 +352,8 @@ def createLoaders_3(asyncSessionMaker, models=dbModels) -> Loaders:
         
         @property
         @cache
-        def authorizations(self):
-            return AuthorizationLoader()
+        def authorizations(self): return AuthorizationLoader()
+            
         
         @property
         @cache
@@ -374,10 +372,8 @@ def createLoaders_3(asyncSessionMaker, models=dbModels) -> Loaders:
 
         @property
         @cache
-        def externalids_inner_id(self):
-            return createFkeyLoader(
-                asyncSessionMaker, ExternalIdModel, foreignKeyName="inner_id"
-            )
+        def externalids_inner_id(self): return createFkeyLoader(asyncSessionMaker, ExternalIdModel, foreignKeyName="inner_id")
+            
 
     return Loaders()
 
@@ -423,17 +419,14 @@ demouser = {
 def getUserFromInfo(info):
     context = info.context
     #print(list(context.keys()))
-    result = context.get("user", None)
-    if result is None:
-        authorization = context["request"].headers.get("Authorization", None)
-        if authorization is not None:
-            if 'Bearer ' in authorization:
-                token = authorization.split(' ')[1]
-                if token == "2d9dc5ca-a4a2-11ed-b9df-0242ac120003":
-                    result = demouser
-                    context["user"] = result
-    logging.debug("getUserFromInfo", result)
-    return result
+    user = context.get("user", None)
+    if user is None:
+        request = context.get("request", None)
+        assert request is not None, "request is missing in context :("
+        user = request.scope.get("user", None)
+        assert user is not None, "missing user in context or in request.scope"
+    logging.debug("getUserFromInfo", user)
+    return user
 
 def getAuthorizationToken(info):
     context = info.context

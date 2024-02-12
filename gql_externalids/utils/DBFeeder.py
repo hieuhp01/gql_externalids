@@ -16,15 +16,12 @@ def get_demodata():
     def datetime_parser(json_dict):
         for (key, value) in json_dict.items():
             if key in ["startdate", "enddate", "lastchange", "created"]:
-                if value is None:
-                    dateValueWOtzinfo = None
+                if value is None: dateValueWOtzinfo = None
                 else:
                     try:
                         dateValue = datetime.datetime.fromisoformat(value)
                         dateValueWOtzinfo = dateValue.replace(tzinfo=None)
-                    except:
-                        print("jsonconvert Error", key, value, flush=True)
-                        dateValueWOtzinfo = None
+                    except: print("jsonconvert Error", key, value, flush=True); dateValueWOtzinfo = None
                 
                 json_dict[key] = dateValueWOtzinfo
             if (key in ["id", "changedby", "createdby"]) or (key.endswith("_id")):
@@ -53,11 +50,9 @@ async def initDB(asyncSessionMaker):
             ExternalIdTypeModel,
             ExternalIdModel
         ]
-    else:
-        dbModels = [
+    else: dbModels = [
             ExternalIdCategoryModel,
             ExternalIdTypeModel,
-            
             ExternalIdModel
         ]
 

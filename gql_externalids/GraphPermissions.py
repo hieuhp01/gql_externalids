@@ -40,8 +40,8 @@ class BasePermission(strawberry.permission.BasePermission):
 
     async def has_permission(
         self, source, info: strawberry.types.Info, **kwargs
-    ) -> bool:
-        raise NotImplemented()
+    ) -> bool: raise NotImplemented()
+        
         # print("BasePermission", source)
         # print("BasePermission", self)
         # print("BasePermission", kwargs)
@@ -187,27 +187,27 @@ rolelist = [
 import requests
 from gql_externalids.utils.gql_ug_proxy import createProxy
 
-def ReadAllRoles():
-    GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
-    gqlproxy = createProxy(GQLUG_ENDPOINT_URL)
+# def ReadAllRoles():
+#     GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
+#     gqlproxy = createProxy(GQLUG_ENDPOINT_URL)
 
-    query = """query {roleTypePage(limit: 1000) {id, name, nameEn}}"""
-    variables = {}
+#     query = """query {roleTypePage(limit: 1000) {id, name, nameEn}}"""
+#     variables = {}
 
-    respJson = gqlproxy.post(query=query, variables=variables)
-    assert respJson.get("errors", None) is None, respJson["errors"]
-    respdata = respJson.get("data", None)
-    assert respdata is not None, "during roles reading roles have not been readed"
-    roles = respdata.get("roles", None)
-    assert roles is not None, "during roles reading roles have not been readed"
-    print("roles", roles)
-    roles = list(map(lambda item: {**item, "nameEn": item["name_ne"]}, roles))
-    return [*roles]
+#     respJson = gqlproxy.post(query=query, variables=variables)
+#     assert respJson.get("errors", None) is None, respJson["errors"]
+#     respdata = respJson.get("data", None)
+#     assert respdata is not None, "during roles reading roles have not been readed"
+#     roles = respdata.get("roles", None)
+#     assert roles is not None, "during roles reading roles have not been readed"
+#     print("roles", roles)
+#     roles = list(map(lambda item: {**item, "nameEn": item["name_ne"]}, roles))
+#     return [*roles]
 
-if not isDEMO:
-    rolelist = ReadAllRoles()
+# if not isDEMO:
+#     rolelist = ReadAllRoles()
 
-roleIndex = { role["name_en"]: role["id"] for role in rolelist }
+# roleIndex = { role["name_en"]: role["id"] for role in rolelist }
 
 # async def ReadRoles(
 #     userId="2d9dc5ca-a4a2-11ed-b9df-0242ac120003", 
@@ -265,12 +265,12 @@ roleIndex = { role["name_en"]: role["id"] for role in rolelist }
 #     print("groupsAuthorizedIds", groupsAuthorizedIds)
 #     return groupsAuthorizedIds
 
-@cache
-def RolesToList(roles: str = ""):
-    roleNames = roles.split(";")
-    roleNames = list(map(lambda item: item.strip(), roleNames))
-    roleIdsNeeded = list(map(lambda roleName: roleIndex[roleName], roleNames))
-    return roleIdsNeeded
+# @cache
+# def RolesToList(roles: str = ""):
+#     roleNames = roles.split(";")
+#     roleNames = list(map(lambda item: item.strip(), roleNames))
+#     roleIdsNeeded = list(map(lambda roleName: roleIndex[roleName], roleNames))
+#     return roleIdsNeeded
 
 from gql_externalids.utils.Dataloaders import getLoadersFromInfo
 # from ._RBACObjectGQLModel import RBACObjectGQLModel
@@ -299,8 +299,8 @@ def OnlyForAuthentized(isList=False):
             #     return False        
             # return True
         
-        def on_unauthorized(self):
-            return ([] if isList else None)
+        def on_unauthorized(self): return ([] if isList else None)
+            
             #     return []
             # else:
             #     return None
@@ -310,9 +310,8 @@ def OnlyForAuthentized(isList=False):
             DEMO = os.getenv("DEMO", None)
             if DEMO == "True":
                 return True
-            else:
-                return False
-            
+            else: return False
+
     return OnlyForAuthentized
 
 # @cache

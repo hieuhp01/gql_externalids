@@ -27,8 +27,7 @@ def resolve_name(self) -> str:
     return self.name
 
 @strawberry.field(description="""English name""")
-def resolve_name_en(self) -> str:
-    return self.name_en
+def resolve_name_en(self) -> str: return self.name_en
 
 @strawberry.field(description="""Time of last update""")
 def resolve_lastchange(self) -> datetime.datetime:
@@ -44,8 +43,7 @@ async def resolve_user(user_id):
     return result
     
 @strawberry.field(description="""Who created entity""")
-async def resolve_createdby(self) -> typing.Optional["UserGQLModel"]:
-    return await resolve_user(user_id=self.createdby)
+async def resolve_createdby(self) -> typing.Optional["UserGQLModel"]: return await resolve_user(user_id=self.createdby)
 
 @strawberry.field(description="""Who made last change""")
 async def resolve_changedby(self) -> typing.Optional["UserGQLModel"]:
