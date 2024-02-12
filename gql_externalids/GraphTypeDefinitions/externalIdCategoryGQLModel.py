@@ -2,7 +2,7 @@ import strawberry
 import datetime
 import typing
 from typing import Optional, List, Union, Annotated, Type
-from gql_externalids.GraphPermissions import OnlyForAuthentized, RoleBasedPermission
+from gql_externalids.GraphPermissions import OnlyForAuthentized 
 import gql_externalids.GraphTypeDefinitions
 from uuid import UUID
 

@@ -22,7 +22,7 @@ from .externalIdTypeGQLModel import ExternalIdTypeGQLModel
 from .externalIdGQLModel import ExternalIdGQLModel
 
 from .externals import UserGQLModel, GroupGQLModel
-from gql_externalids.GraphPermissions import RoleBasedPermission
+
 from gql_externalids.utils.Dataloaders import getUserFromInfo
 
 @strawberry.type(description="""Type for query root""")
