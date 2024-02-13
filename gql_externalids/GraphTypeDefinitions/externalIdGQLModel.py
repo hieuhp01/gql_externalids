@@ -24,9 +24,9 @@ from gql_externalids.GraphResolvers import (
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
 GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".externals")]
-# ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
-# PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
-# FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
+ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
+PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
+FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
 
 from .externalIdTypeGQLModel import ExternalIdTypeGQLModel
 
@@ -168,8 +168,7 @@ async def externalid_insert(self, info: strawberry.types.Info, externalid: Exter
         row = await loader.insert(externalid)
         result.id = row.id
         result.msg = "ok"
-    # else:
-    #     result = {"id": row.id, "msg": "fail"}
+    #else: result = {"id": row.id, "msg": "fail"}
     return result
 
 @strawberry.mutation(description="Remove an external ID",permission_classes=[OnlyForAuthentized()])
@@ -181,8 +180,7 @@ async def externalid_delete(self, info: strawberry.types.Info, externalid: Exter
     if row is not None:
         row = await loader.delete(row.id)
         result.msg = "ok"
-    # else:
-    #     result = {"id": row.id, "msg": "fail"}
+    #else: result.msg = "fail"
     return result
 
 @strawberry.mutation(description="Updates an external ID with a new external ID",permission_classes=[OnlyForAuthentized()])
@@ -202,8 +200,5 @@ async def externalid_update(self, info: strawberry.types.Info, externalid: Exter
 
         result.msg = "ok"
         result.id = row.id
-    # else:
-    #     result.id = None
-    #     result.msg = "fail"
-
+    #else: result = {"id": None, "msg": "fail"}
     return result

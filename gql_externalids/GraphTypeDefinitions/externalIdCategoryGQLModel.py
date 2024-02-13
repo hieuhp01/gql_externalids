@@ -24,9 +24,9 @@ from gql_externalids.GraphResolvers import (
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
 GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".externals")]
-# ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
-# PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
-# FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
+ProjectGQLModel = Annotated["ProjectGQLModel", strawberry.lazy(".externals")]
+PublicationGQLModel = Annotated["PublicationGQLModel", strawberry.lazy(".externals")]
+FacilityGQLModel = Annotated["FacilityGQLModel", strawberry.lazy(".externals")]
 
 @strawberry.federation.type(
     keys=["id"],
@@ -121,7 +121,7 @@ async def externalidcategory_insert(self, info: strawberry.types.Info, externali
     result = ExternalIdCategoryResultGQLModel(id=row.id,msg="ok") 
     result.id = row.id
     result.msg = "ok"
-
+   
     return result
 
 @strawberry.mutation(

@@ -21,7 +21,7 @@ from .externalIdCategoryGQLModel import ExternalIdCategoryGQLModel
 from .externalIdTypeGQLModel import ExternalIdTypeGQLModel
 from .externalIdGQLModel import ExternalIdGQLModel
 
-from .externals import UserGQLModel, GroupGQLModel
+from .externals import UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel
 
 from gql_externalids.utils.Dataloaders import getUserFromInfo
 
@@ -96,4 +96,4 @@ class Mutation:
 #
 ###########################################################################################################################
 
-schema = strawberry.federation.Schema(Query, types=(UserGQLModel, GroupGQLModel ), mutation=Mutation)
+schema = strawberry.federation.Schema(Query, types=(UserGQLModel, GroupGQLModel, ProjectGQLModel, PublicationGQLModel, FacilityGQLModel), mutation=Mutation)

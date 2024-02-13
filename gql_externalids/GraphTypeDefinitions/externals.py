@@ -77,47 +77,38 @@ class RBACObjectGQLModel:
         authorizedroles = await loader.load(id)
         return authorizedroles
     
-# @strawberry.federation.type(extend=True, keys=["id"])
-# class ProjectGQLModel:
+@strawberry.federation.type(extend=True, keys=["id"])
+class ProjectGQLModel:
 
-#     id: UUID = strawberry.federation.field(external=True)
+    id: UUID = strawberry.federation.field(external=True)
+    resolve_reference = resolve_reference
 
-#     @classmethod
-#     async def resolve_reference(cls, id: UUID):
-#         return None if id is None else ProjectGQLModel(id=id)
-
-#     # @strawberry.field(description="""All external ids related to the project""")
-#     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
-#     #     return await resolve_external_ids(self, info)
+    # @strawberry.field(description="""All external ids related to the project""")
+    # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+    #     return await resolve_external_ids(self, info)
     
-#     external_ids = resolve_external_ids
+    external_ids = resolve_external_ids
     
-# @strawberry.federation.type(extend=True, keys=["id"])
-# class PublicationGQLModel:
+@strawberry.federation.type(extend=True, keys=["id"])
+class PublicationGQLModel:
 
-#     id: UUID = strawberry.federation.field(external=True)
-
-#     @classmethod
-#     async def resolve_reference(cls, id: UUID):
-#         return None if id is None else PublicationGQLModel(id=id)
+    id: UUID = strawberry.federation.field(external=True)
+    resolve_reference = resolve_reference
     
-#     # @strawberry.field(description="""All external ids related to the publication""")
-#     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
-#     #     return await resolve_external_ids(self, info)
+    # @strawberry.field(description="""All external ids related to the publication""")
+    # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+    #     return await resolve_external_ids(self, info)
     
-#     external_ids = resolve_external_ids
+    external_ids = resolve_external_ids
     
-# @strawberry.federation.type(extend=True, keys=["id"])
-# class FacilityGQLModel:
+@strawberry.federation.type(extend=True, keys=["id"])
+class FacilityGQLModel:
 
-#     id: UUID = strawberry.federation.field(external=True)
+    id: UUID = strawberry.federation.field(external=True)
+    resolve_reference = resolve_reference
 
-#     @classmethod
-#     async def resolve_reference(cls, id: UUID):
-#         return None if id is None else FacilityGQLModel(id=id)
-
-#     # @strawberry.field(description="""All external ids related to the facility""")
-#     # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
-#     #     return await resolve_external_ids(self, info)
+    # @strawberry.field(description="""All external ids related to the facility""")
+    # async def external_ids(self, info: strawberry.types.Info) -> List[ExternalIdGQLModel]:
+    #     return await resolve_external_ids(self, info)
     
-#     external_ids = resolve_external_ids
+    external_ids = resolve_external_ids
