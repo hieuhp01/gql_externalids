@@ -55,29 +55,25 @@ class ExternalIdGQLModel(BaseGQLModel):
     # implementation is inherited
 
     id = resolve_id
-    name = resolve_name
     changedby = resolve_changedby
     lastchange = resolve_lastchange
     created = resolve_created
     createdby = resolve_createdby
-    name_en = resolve_name_en
-    rbacobject = resolve_rbacobject
 
-
-    @strawberry.field(description="""Inner id""",permission_classes=[OnlyForAuthentized()])
+    @strawberry.field(description="""Inner id""",permission_classes=[OnlyForAuthentized(isList=True)])
     def inner_id(self) -> UUID:
         return self.inner_id
 
-    @strawberry.field(description="""Outer id""",permission_classes=[OnlyForAuthentized()])
+    @strawberry.field(description="""Outer id""",permission_classes=[OnlyForAuthentized(isList=True)])
     def outer_id(self) -> str:
         return self.outer_id
 
-    @strawberry.field(description="""Type of id""",permission_classes=[OnlyForAuthentized()])
+    @strawberry.field(description="""Type of id""",permission_classes=[OnlyForAuthentized(isList=True)])
     async def id_type(self, info: strawberry.types.Info) -> "ExternalIdTypeGQLModel":
         result = await ExternalIdTypeGQLModel.resolve_reference(info=info, id=self.typeid_id)
         return result
 
-    @strawberry.field(description="""Type name of id""",permission_classes=[OnlyForAuthentized()])
+    @strawberry.field(description="""Type name of id""",permission_classes=[OnlyForAuthentized(isList=True)])
     async def type_name(self, info: strawberry.types.Info) -> Union[str, None]:
         result = await ExternalIdTypeGQLModel.resolve_reference(info=info, id=self.typeid_id)
         return result.name if result else None
@@ -114,7 +110,29 @@ async def external_ids(
     filter_params = {"inner_id": inner_id, "typeid_id": typeid_id} if typeid_id else {"inner_id": inner_id}
     rows = await loader.filter_by(**filter_params)
     return rows
-    
+
+from gql_externalids.GraphPermissions import OnlyForAuthentized
+@strawberry.field(
+    description="Retrieves the form type",
+    permission_classes=[OnlyForAuthentized()])
+async def externalid_by_id(
+    self, info: strawberry.types.Info, id: UUID
+) -> typing.Optional[ExternalIdGQLModel]:
+    result = await ExternalIdGQLModel.resolve_reference(info=info, id=id)
+    return result
+
+from dataclasses import dataclass
+from uoishelpers.resolvers import createInputs
+
+@createInputs
+@dataclass
+class ExternalIdWhereFilter:
+    inner_id: UUID
+    outer_id: str
+    typeid_id: UUID
+
+    from .externalIdTypeGQLModel import ExternalIdTypeWhereFilter
+    id_type: ExternalIdTypeWhereFilter
 #####################################################################
 #
 # Mutation section

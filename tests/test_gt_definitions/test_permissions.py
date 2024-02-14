@@ -187,8 +187,6 @@ import pytest
 #     assert errors is None, result
 
 
-
-
 # @pytest.mark.asyncio
 # async def test_demo_role(DemoFalse, ClientExecutorAdmin, FillDataViaGQL, Context, Env_GQLUG_ENDPOINT_URL_8124):
 #     GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
@@ -197,12 +195,12 @@ import pytest
 #     logging.info(f"test_low_role DEMO: {DEMO}")
 #     query = """
 #     query($id: UUID!) { 
-#         result: externalidtypeById(id: $id) { 
+#         result: externalidById(id: $id) { 
 #             id           
 #         }
 #     }
 #     """
-#     variable_values = {"id": "53697b35-9f67-41e5-abed-04d7d4865cf2"}
+#     variable_values = {"id": "d5d5286d-50d2-4b07-97de-7407c62c21c0"}
 #     result = await ClientExecutorAdmin(query=query, variable_values=variable_values)
 #     logging.info(f"test_demo_role result: \n {result}")
 #     print(result)

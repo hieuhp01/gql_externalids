@@ -56,7 +56,7 @@ class ExternalIdTypeGQLModel(BaseGQLModel):
     rbacobject = resolve_rbacobject
 
 
-    @strawberry.field(description="""Category which belongs to""",permission_classes=[OnlyForAuthentized()])
+    @strawberry.field(description="""Category which belongs to""",permission_classes=[OnlyForAuthentized(isList=True)])
     async def category(self, info: strawberry.types.Info) -> typing.Optional["ExternalIdCategoryGQLModel"]:
         from .externalIdCategoryGQLModel import ExternalIdCategoryGQLModel
         result = await ExternalIdCategoryGQLModel.resolve_reference(info, self.category_id)
@@ -89,7 +89,7 @@ externalid_type_page = createRootResolver_by_page(
 
 externalidtype_by_id = createRootResolver_by_id(
     ExternalIdTypeGQLModel, 
-    description="Retrieves the form category")
+    description="Retrieves the externalid type by id")
 
 
 # @strawberry.field(description="""Rows of externaltypeids""",permission_classes=[OnlyForAuthentized()])

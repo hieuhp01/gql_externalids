@@ -18,6 +18,7 @@ from tests._deprecated.client import CreateClientFunction
 from .gt_utils import ( 
     createResolveReferenceTest, 
     createFrontendQuery, 
+    createByIdTest
 )
 
 # test_reference_externalid = createResolveReferenceTest(tableName="externalids", gqltype="ExternalIdGQLModel", attributeNames=["id", "name", "lastchange", "nameEn", "innerId","outerId","idType {id}","typeName"])
@@ -181,6 +182,15 @@ test_query_externalid = createFrontendQuery(
         }
     }""",
     variables={"inner_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "typeid_id": "d00ec0b6-f27c-497b-8fc8-ddb4e2460717"},
+)
+
+test_query_externalid_byid = createFrontendQuery(
+    query="""query($id: UUID!) {
+        externalidById(id: $id) {
+            id
+        }
+    }""",
+    variables={"id": "d5d5286d-50d2-4b07-97de-7407c62c21c0"},
 )
 
 test_externalid_insert = createFrontendQuery(query="""

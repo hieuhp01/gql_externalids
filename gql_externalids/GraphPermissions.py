@@ -41,7 +41,6 @@ class BasePermission(strawberry.permission.BasePermission):
     async def has_permission(
         self, source, info: strawberry.types.Info, **kwargs
     ) -> bool: raise NotImplemented()
-        
         # print("BasePermission", source)
         # print("BasePermission", self)
         # print("BasePermission", kwargs)
@@ -53,7 +52,6 @@ class BasePermission(strawberry.permission.BasePermission):
 
 from functools import cache
 import aiohttp
-
 
 rolelist = [
         {
@@ -142,47 +140,8 @@ rolelist = [
         }
     ]
 
-# async def getRoles(userId="", roleUrlEndpoint="http://localhost:8088/gql/", isDEMO=True):
-#     query = """query($userid: UUID!){
-#             roles: roleByUser(userId: $userid) {
-#                 id
-#                 valid
-#                 roletype { id }
-#                 group { id }
-#                 user { id }
-#             }
-#         }
-# """
-#     variables = {"userid": userId}
-#     headers = {}
-#     json = {
-#         "query": query,
-#         "variables": variables
-#     }
+####
 
-#     print("roleUrlEndpoint", roleUrlEndpoint)
-#     async with aiohttp.ClientSession() as session:
-#         print(f"query {roleUrlEndpoint} for json={json}")
-#         async with session.post(url=roleUrlEndpoint, json=json, headers=headers) as resp:
-#             print(resp.status)
-#             if resp.status != 200:
-#                 text = await resp.text()
-#                 print(text)
-#                 return []
-#             else:
-#                 respJson = await resp.json()
-
-#     print(respJson)
-    
-#     assert respJson.get("errors", None) is None
-#     respdata = respJson.get("data", None)
-#     assert respdata is not None
-#     roles = respdata.get("roles", None)
-#     assert roles is not None
-#     print("roles", roles)
-#     return [*roles]
-
-#     pass
 
 import requests
 from gql_externalids.utils.gql_ug_proxy import createProxy
@@ -204,66 +163,11 @@ from gql_externalids.utils.gql_ug_proxy import createProxy
 #     roles = list(map(lambda item: {**item, "nameEn": item["name_ne"]}, roles))
 #     return [*roles]
 
-# if not isDEMO:
-#     rolelist = ReadAllRoles()
-
+# if not isDEMO: rolelist = ReadAllRoles()
 # roleIndex = { role["name_en"]: role["id"] for role in rolelist }
 
-# async def ReadRoles(
-#     userId="2d9dc5ca-a4a2-11ed-b9df-0242ac120003", 
-#     roleUrlEndpoint="http://localhost:8088/gql/",
-#     demo=True):
-    
-#     query = """query($userid: UUID!){
-#             roles: roleByUser(userId: $userid) {
-#                 id
-#                 valid
-#                 roletype { id }
-#                 group { id }
-#                 user { id }
-#             }
-#         }
-# """
-#     variables = {"userid": userId}
-#     headers = {}
-#     json = {
-#         "query": query,
-#         "variables": variables
-#     }
 
-#     print("roleUrlEndpoint", roleUrlEndpoint)
-#     async with aiohttp.ClientSession() as session:
-#         print(f"query {roleUrlEndpoint} for json={json}")
-#         async with session.post(url=roleUrlEndpoint, json=json, headers=headers) as resp:
-#             print(resp.status)
-#             if resp.status != 200:
-#                 text = await resp.text()
-#                 print(text)
-#                 return []
-#             else:
-#                 respJson = await resp.json()
-
-#     print(respJson)
-    
-#     assert respJson.get("errors", None) is None
-#     respdata = respJson.get("data", None)
-#     assert respdata is not None
-#     roles = respdata.get("roles", None)
-#     assert roles is not None
-#     print("roles", roles)
-#     return [*roles]
-
-# def WhereAuthorized(userRoles, roleIdsNeeded=[]):
-    
-#     # 👇 filtrace roli, ktere maji pozadovanou uroven autorizace
-#     roletypesFiltered = filter(lambda item: item["roletype"]["id"] in roleIdsNeeded, userRoles)
-#     # 👇 odvozeni, pro ktere skupiny ma tazatel patricnou uroven autorizace
-#     groupsAuthorizedIds = map(lambda item: item["group"]["id"], roletypesFiltered)
-#     # 👇 konverze na list
-#     groupsAuthorizedIds = list(groupsAuthorizedIds)
-#     # cokoliv se tyka techto skupin, na to autor muze
-#     print("groupsAuthorizedIds", groupsAuthorizedIds)
-#     return groupsAuthorizedIds
+# ###
 
 # @cache
 # def RolesToList(roles: str = ""):
@@ -272,15 +176,11 @@ from gql_externalids.utils.gql_ug_proxy import createProxy
 #     roleIdsNeeded = list(map(lambda roleName: roleIndex[roleName], roleNames))
 #     return roleIdsNeeded
 
-from gql_externalids.utils.Dataloaders import getLoadersFromInfo
-# from ._RBACObjectGQLModel import RBACObjectGQLModel
-
-# async def resolveRoles(info, id):
-#     return []
-
 from gql_externalids.utils.Dataloaders import getUgConnection, getLoadersFromInfo
 from gql_externalids.utils.Dataloaders import getUserFromInfo
 
+
+###
 
 @cache
 def OnlyForAuthentized(isList=False):
@@ -294,13 +194,10 @@ def OnlyForAuthentized(isList=False):
                 print("DEMO Enabled, not for production")
                 return True
             
-            user = getUserFromInfo(info)
-            return (False if user is None else True)
+            return False if getUserFromInfo(info) is None else True
             #     return False        
             # return True
-        
         def on_unauthorized(self): return ([] if isList else None)
-            
             #     return []
             # else:
             #     return None
@@ -308,17 +205,19 @@ def OnlyForAuthentized(isList=False):
         @cached_property
         def isDEMO(self):
             DEMO = os.getenv("DEMO", None)
-            if DEMO == "True":
-                return True
-            else: return False
-
+            return DEMO == "True"
+            
     return OnlyForAuthentized
+
+
+
+###
 
 # @cache
 # def RoleBasedPermission(roles: str = "", whatreturn=[]):
 #     roleIdsNeeded = RolesToList(roles)
 
-#     from GraphTypeDefinitions.externals import RBACObjectGQLModel
+#     from gql_externalids.GraphTypeDefinitions.externals import RBACObjectGQLModel
 #     class RolebasedPermission(BasePermission):
 #         message = "User has not appropriate roles"
 
@@ -387,13 +286,5 @@ def OnlyForAuthentized(isList=False):
 #     return RolebasedPermission
 
 
-# class UserGDPRPermission(BasePermission):
-#     message = "User is not authenticated"
 
-#     async def has_permission(
-#         self, source, info: strawberry.types.Info, **kwargs
-#     ) -> bool:
-#         print("UserGDPRPermission", source)
-#         print("UserGDPRPermission", self)
-#         print("UserGDPRPermission", kwargs)
-#         return True
+###

@@ -40,6 +40,9 @@ class Query:
 
     from .externalIdGQLModel import internal_id
     internal_id = internal_id
+    
+    from .externalIdGQLModel import externalid_by_id
+    externalid_by_id = externalid_by_id
 
     from .externalIdTypeGQLModel import externalid_type_page
     externalidtype_page = externalid_type_page
