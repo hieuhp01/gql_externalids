@@ -1,5 +1,5 @@
 from functools import cache
-from gql_externalids.DBDefinitions import (
+from DBDefinitions import (
     ExternalIdTypeModel,
     ExternalIdCategoryModel,
     ExternalIdModel

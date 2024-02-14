@@ -1,5 +1,5 @@
 import pytest
-from gql_externalids.GraphTypeDefinitions import schema
+from GraphTypeDefinitions import schema
 import logging
 import sqlalchemy
 import uuid

@@ -6,8 +6,8 @@ import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
-from gql_externalids.DBDefinitions import BaseModel
-from gql_externalids.DBDefinitions import ExternalIdTypeModel, ExternalIdModel, ExternalIdCategoryModel
+from DBDefinitions import BaseModel
+from DBDefinitions import ExternalIdTypeModel, ExternalIdModel, ExternalIdCategoryModel
 
 from .shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
@@ -20,7 +20,7 @@ async def test_load_demo_data():
     #data = get_demodata()
 
 
-from gql_externalids.DBDefinitions import ComposeConnectionString
+from DBDefinitions import ComposeConnectionString
 
 
 def test_connection_string():
@@ -31,7 +31,7 @@ def test_connection_string():
 
 
 
-from gql_externalids.DBDefinitions import startEngine
+from DBDefinitions import startEngine
 
 
 @pytest.mark.asyncio
@@ -43,7 +43,7 @@ async def test_table_start_engine():
 
     assert async_session_maker is not None
  
-from gql_externalids.utils.DBFeeder import initDB
+from utils.DBFeeder import initDB
 
 
 @pytest.mark.asyncio

@@ -27,7 +27,7 @@ from fastapi import FastAPI, Request, Depends
 from strawberry.fastapi import GraphQLRouter
 from contextlib import asynccontextmanager
 
-from gql_externalids.DBDefinitions import ComposeConnectionString
+from DBDefinitions import ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
 # from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
@@ -38,7 +38,7 @@ appcontext = {}
 @asynccontextmanager
 async def initEngine(app: FastAPI):
 
-    from gql_externalids.DBDefinitions import startEngine, ComposeConnectionString
+    from DBDefinitions import startEngine, ComposeConnectionString
 
     connectionstring = ComposeConnectionString()
     makeDrop = os.getenv("DEMO", None) == "True"
@@ -52,15 +52,15 @@ async def initEngine(app: FastAPI):
 
     logging.info("engine started")
 
-    from gql_externalids.utils.DBFeeder import initDB
+    from utils.DBFeeder import initDB
     await initDB(asyncSessionMaker)
 
     logging.info("data (if any) imported")
     yield
 
 
-from gql_externalids.GraphTypeDefinitions import schema
-from gql_externalids.utils.sentinel import sentinel
+from GraphTypeDefinitions import schema
+from utils.sentinel import sentinel
 
 async def get_context(request: Request):
     asyncSessionMaker = appcontext.get("asyncSessionMaker", None)
@@ -68,7 +68,7 @@ async def get_context(request: Request):
         async with initEngine(app) as cntx:
             pass
         
-    from gql_externalids.utils.Dataloaders import createLoadersContext, createUgConnectionContext
+    from utils.Dataloaders import createLoadersContext, createUgConnectionContext
     context = createLoadersContext(appcontext["asyncSessionMaker"])
     i = Item(query = "")
     # i.query = ""
@@ -85,7 +85,7 @@ async def get_context(request: Request):
 
 app = FastAPI(lifespan=initEngine)
 
-from gql_externalids.doc import attachVoyager
+from doc import attachVoyager
 attachVoyager(app, path="/gql/doc")
 
 print("All initialization is done")
@@ -113,7 +113,7 @@ app.include_router(graphql_app, prefix="/gql2")
 async def graphiql(request: Request):
     return await graphql_app.render_graphql_ide(request)
 
-from gql_externalids.utils.sentinel import sentinel
+from utils.sentinel import sentinel
 
 @app.post("/gql")
 async def apollo_gql(request: Request, item: Item):

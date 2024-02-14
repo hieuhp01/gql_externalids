@@ -1,5 +1,5 @@
 import pytest
-from gql_externalids.GraphTypeDefinitions import schema
+from GraphTypeDefinitions import schema
 
 from .gt_utils import (
     createByIdTest, 

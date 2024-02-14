@@ -10,7 +10,7 @@ from tests._deprecated.shared import (
     createContext,
 )
 
-from gql_externalids.GraphTypeDefinitions import schema
+from GraphTypeDefinitions import schema
 
 def createGQLClient():
 

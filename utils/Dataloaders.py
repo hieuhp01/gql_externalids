@@ -1,7 +1,7 @@
 from functools import cache
 import logging
 
-from gql_externalids.DBDefinitions import (
+from DBDefinitions import (
     ExternalIdTypeModel,
     ExternalIdCategoryModel,
     ExternalIdModel
