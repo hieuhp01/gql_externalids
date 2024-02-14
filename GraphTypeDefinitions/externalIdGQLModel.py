@@ -140,7 +140,7 @@ class ExternalIdWhereFilter:
 #
 #####################################################################
 
-@strawberry.input()
+@strawberry.input(description="Input structure - C operation")
 class ExternalIdInsertGQLModel:
     inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
     typeid_id: UUID = strawberry.field(default=None, description="Type of external id")
@@ -148,14 +148,14 @@ class ExternalIdInsertGQLModel:
     changedby: strawberry.Private[UUID] = None
     createdby: strawberry.Private[UUID] = None
 
-@strawberry.input()
+@strawberry.input(description="Input structure - U operation")
 class ExternalIdUpdateGQLModel:
     inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
     typeid_id: UUID = strawberry.field(default=None, description="Type of external id")
     outer_id: Optional[str] = strawberry.field(default=None, description="Key used by other systems")
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
     
-@strawberry.input()
+@strawberry.input(description="Input structure - D operation")
 class ExternalIdDeleteGQLModel:
     inner_id: UUID = strawberry.field(default=None, description="Primary key of entity which new outeid is assigned")
     typeid_id: UUID = strawberry.field(default=None, description="Type of external id")
@@ -163,7 +163,7 @@ class ExternalIdDeleteGQLModel:
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
     
 
-@strawberry.type()
+@strawberry.type(description="Result of CU operation on external id")
 class ExternalIdResultGQLModel:
     id: Optional[UUID] = strawberry.field(default=None, description="Primary key of table row")
     msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)

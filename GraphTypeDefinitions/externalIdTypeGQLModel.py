@@ -104,7 +104,7 @@ externalidtype_by_id = createRootResolver_by_id(
 #####################################################################
 import datetime
 
-@strawberry.input()
+@strawberry.input(description="Input structure - C operation")
 class ExternalIdTypeInsertGQLModel:
     name: str = strawberry.field(default=None, description="Name of type")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of type")
@@ -113,7 +113,7 @@ class ExternalIdTypeInsertGQLModel:
     category_id: Optional[UUID] = strawberry.field(default=None, description="Category of type")
     createdby: strawberry.Private[UUID] = None
 
-@strawberry.input()
+@strawberry.input(description="Input structure - U operation")
 class ExternalIdTypeUpdateGQLModel:
     id: UUID = strawberry.field(default=None, description="Primary key")
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
@@ -123,7 +123,7 @@ class ExternalIdTypeUpdateGQLModel:
     category_id: Optional[UUID] = strawberry.field(default=None, description="Category of type")
     changedby: strawberry.Private[UUID] = None
     
-@strawberry.type()
+@strawberry.type(description="Result of CU operation on external id type")
 class ExternalIdTypeResultGQLModel:
     id: Optional[UUID] = strawberry.field(default=None, description="Primary key of table row")
     msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)

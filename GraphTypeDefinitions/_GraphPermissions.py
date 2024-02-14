@@ -217,7 +217,7 @@ def OnlyForAuthentized(isList=False):
 # def RoleBasedPermission(roles: str = "", whatreturn=[]):
 #     roleIdsNeeded = RolesToList(roles)
 
-#     from GraphTypeDefinitions.externals import RBACObjectGQLModel
+#     from gql_externalids.GraphTypeDefinitions.externals import RBACObjectGQLModel
 #     class RolebasedPermission(BasePermission):
 #         message = "User has not appropriate roles"
 

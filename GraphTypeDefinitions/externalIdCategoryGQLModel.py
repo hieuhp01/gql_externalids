@@ -84,14 +84,14 @@ externalid_category_page = createRootResolver_by_page(
 
 import datetime
 
-@strawberry.input()
+@strawberry.input(description="Input structure - C operation")
 class ExternalIdCategoryInsertGQLModel:
     name: str = strawberry.field(default=None, description="Name of type")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of type")
     id: Optional[UUID] = strawberry.field(default=None, description="Could be uuid primary key")
     createdby: strawberry.Private[UUID] = None
 
-@strawberry.input()
+@strawberry.input(description="Input structure - U operation")
 class ExternalIdCategoryUpdateGQLModel:
     id: UUID = strawberry.field(default=None, description="Primary key")
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
@@ -99,7 +99,7 @@ class ExternalIdCategoryUpdateGQLModel:
     name_en: Optional[str] = strawberry.field(default=None, description="En name of category")
     changedby: strawberry.Private[UUID] = None
     
-@strawberry.type()
+@strawberry.type(description="Result of CU operation on external id category")
 class ExternalIdCategoryResultGQLModel:
     id: Optional[UUID] = strawberry.field(default=None, description="Primary key of table row")
     msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)
