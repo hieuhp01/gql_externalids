@@ -2,14 +2,14 @@ import strawberry
 import datetime
 import typing
 from typing import Optional, Union, List, Annotated
-from GraphTypeDefinitions._GraphPermissions import OnlyForAuthentized
-import GraphTypeDefinitions
+from gql_externalids.GraphPermissions import OnlyForAuthentized
+import gql_externalids.GraphTypeDefinitions
 from uuid import UUID
 
-from utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
+from gql_externalids.utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
 from .BaseGQLModel import BaseGQLModel
 
-from GraphTypeDefinitions._GraphResolvers import (
+from gql_externalids.GraphResolvers import (
     resolve_id,
     resolve_name,
     resolve_name_en,
@@ -54,10 +54,6 @@ class ExternalIdTypeGQLModel(BaseGQLModel):
     createdby = resolve_createdby
     name_en = resolve_name_en
     rbacobject = resolve_rbacobject
-    
-    @strawberry.field(description="""Url format """)
-    def url_format(self) -> str:
-        return self.urlformat
 
 
     @strawberry.field(description="""Category which belongs to""",permission_classes=[OnlyForAuthentized(isList=True)])
@@ -108,7 +104,7 @@ externalidtype_by_id = createRootResolver_by_id(
 #####################################################################
 import datetime
 
-@strawberry.input(description="Input structure - C operation")
+@strawberry.input()
 class ExternalIdTypeInsertGQLModel:
     name: str = strawberry.field(default=None, description="Name of type")
     name_en: Optional[str] = strawberry.field(default=None, description="En name of type")
@@ -117,7 +113,7 @@ class ExternalIdTypeInsertGQLModel:
     category_id: Optional[UUID] = strawberry.field(default=None, description="Category of type")
     createdby: strawberry.Private[UUID] = None
 
-@strawberry.input(description="Input structure - U operation")
+@strawberry.input()
 class ExternalIdTypeUpdateGQLModel:
     id: UUID = strawberry.field(default=None, description="Primary key")
     lastchange: datetime.datetime = strawberry.field(default=None, description="Timestamp")
@@ -127,7 +123,7 @@ class ExternalIdTypeUpdateGQLModel:
     category_id: Optional[UUID] = strawberry.field(default=None, description="Category of type")
     changedby: strawberry.Private[UUID] = None
     
-@strawberry.type(description="Result of CU operation on external id type")
+@strawberry.type()
 class ExternalIdTypeResultGQLModel:
     id: Optional[UUID] = strawberry.field(default=None, description="Primary key of table row")
     msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)
