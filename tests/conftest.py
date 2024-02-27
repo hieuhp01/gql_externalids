@@ -21,8 +21,8 @@ serversTestscope = "function"
 def DBModels():
     from DBDefinitions import (
         ExternalIdCategoryModel,
-        ExternalIdModel,
-        ExternalIdTypeModel
+        ExternalIdTypeModel,
+        ExternalIdModel
     )
     ##
     # order is important!
@@ -527,6 +527,7 @@ async def AccessToken2(OAuthport, OAuthServer):
 async def ClientExecutorAdmin(FastAPIClient2, AccessToken2, AdminUser):
     logging.info(f"Logged user is {AdminUser}")
     token = await AccessToken2(AdminUser)
+    print(f"Token: {token}")
     headers = {"authorization": f"Bearer {token}"}
     return FastAPIClient2(headers)
 

@@ -65,7 +65,8 @@ async def FillDataViaGQL(DemoData, GQLInsertQueries, ClientExecutorAdmin):
                     variable_values[key] = f"{value}"
 
             readResponse = await ClientExecutorAdmin(query=queryset["read"], variable_values=variable_values)
-            if readResponse["data"]["result"] is None:
+            print(readResponse)
+            if readResponse["data"]["result"] is not None:
                 logging.info(f"row with id `{variable_values['id']}` already exists in `{tablename}`")
                 continue
             insertResponse = await ClientExecutorAdmin(query=queryset["create"], variable_values=variable_values)

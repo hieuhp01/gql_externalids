@@ -146,35 +146,35 @@ rolelist = [
 import requests
 from utils.gql_ug_proxy import createProxy
 
-# def ReadAllRoles():
-#     GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
-#     gqlproxy = createProxy(GQLUG_ENDPOINT_URL)
+def ReadAllRoles():
+    GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
+    gqlproxy = createProxy(GQLUG_ENDPOINT_URL)
 
-#     query = """query {roleTypePage(limit: 1000) {id, name, nameEn}}"""
-#     variables = {}
+    query = """query {roleTypePage(limit: 1000) {id, name, nameEn}}"""
+    variables = {}
 
-#     respJson = gqlproxy.post(query=query, variables=variables)
-#     assert respJson.get("errors", None) is None, respJson["errors"]
-#     respdata = respJson.get("data", None)
-#     assert respdata is not None, "during roles reading roles have not been readed"
-#     roles = respdata.get("roles", None)
-#     assert roles is not None, "during roles reading roles have not been readed"
-#     print("roles", roles)
-#     roles = list(map(lambda item: {**item, "nameEn": item["name_ne"]}, roles))
-#     return [*roles]
+    respJson = gqlproxy.post(query=query, variables=variables)
+    assert respJson.get("errors", None) is None, respJson["errors"]
+    respdata = respJson.get("data", None)
+    assert respdata is not None, "during roles reading roles have not been readed"
+    roles = respdata.get("roles", None)
+    assert roles is not None, "during roles reading roles have not been readed"
+    print("roles", roles)
+    roles = list(map(lambda item: {**item, "nameEn": item["name_ne"]}, roles))
+    return [*roles]
 
-# if not isDEMO: rolelist = ReadAllRoles()
-# roleIndex = { role["name_en"]: role["id"] for role in rolelist }
+if not isDEMO: rolelist = ReadAllRoles()
+roleIndex = { role["name_en"]: role["id"] for role in rolelist }
 
 
-# ###
+###
 
-# @cache
-# def RolesToList(roles: str = ""):
-#     roleNames = roles.split(";")
-#     roleNames = list(map(lambda item: item.strip(), roleNames))
-#     roleIdsNeeded = list(map(lambda roleName: roleIndex[roleName], roleNames))
-#     return roleIdsNeeded
+@cache
+def RolesToList(roles: str = ""):
+    roleNames = roles.split(";")
+    roleNames = list(map(lambda item: item.strip(), roleNames))
+    roleIdsNeeded = list(map(lambda roleName: roleIndex[roleName], roleNames))
+    return roleIdsNeeded
 
 from utils.Dataloaders import getUgConnection, getLoadersFromInfo
 from utils.Dataloaders import getUserFromInfo
